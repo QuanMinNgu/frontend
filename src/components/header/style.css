@@ -4,7 +4,7 @@
 }
 .header_brand_container{
     width: 100%;
-    height: 6rem;
+    height: 6.5rem;
     display: flex;
     align-items: center;
 }
@@ -38,7 +38,7 @@
     align-items: center;
     justify-content: center;
     background-color: white;
-    height: 3.5rem;
+    height: 4rem;
     cursor: pointer;
     border-radius: 5rem;
     overflow: hidden;
@@ -71,11 +71,101 @@
     width: 100%;
     height: 100%;
 }
+.mobile_icons{
+    cursor: pointer;
+}
+.header_wrap-footer{
+    background-color: #FF8A08;
+}
+
 @media only screen and (max-width:739px){
-    .header_wrap{
+    .header_wrap-head,
+    .header_wrap-footer{
       padding:0 2rem;
     }
 }
-.mobile_icons{
+.navbar_lists_wrap{
+    display: flex;
+    list-style: none;
+    height: 5rem;
+}
+.navbar_lists_wrap > li{
+    padding:0 2rem;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    border-right: 0.1rem solid rgba(0,0,0,0.05);
     cursor: pointer;
+    position: relative;
+}
+.navbar_lists_wrap > li:first-child{
+    border-left: 0.1rem solid rgba(0,0,0,0.05);
+}
+.navbar_lists_wrap > li:hover{
+    background-color: rgba(0,0,0,0.1);
+}
+.navbar_items{
+    text-decoration: none;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+.navbar_item-infor{
+    font-size: 1.6rem;
+    color:white;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+}
+.kinds_icons{
+    margin-left: 1rem;
+    padding-bottom: 0.3rem;
+}
+
+@keyframes appearing{
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+
+
+.navbar_lists_wrap > li:hover .navbar_item-kinds_container{
+    display: flex;
+    animation: appearing ease 0.8s forwards;
+}
+.navbar_item-kinds_container{
+    position: absolute;
+    top: 95%;
+    left:0;
+    list-style: none;
+    width: 25rem;
+    background-color: white;
+    z-index: 100;
+    display: none;
+    box-shadow:0 0 0.5rem 0.1rem rgba(0,0,0,0.7);
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding:0 0.5rem;
+}
+.navbar_item-kinds_items{
+    width: 45%;
+    text-decoration: none;
+}
+.navbar_item-kinds_items > li{
+    height: 5rem;
+    color:black;
+    display: flex;
+    align-items: center;
+    font-size: 1.4rem;
+    font-weight: 500;
+    transition: all ease 0.2s;
+    text-transform: capitalize;
+}
+.navbar_item-kinds_items > li:hover{
+    transform: translateX(1rem);
+    color:#FF8A08;
 }

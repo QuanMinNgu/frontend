@@ -1,8 +1,29 @@
 import React from "react";
+import SwiperHome from "~/swiper/SwiperHome";
 import "./style.css";
 
 const Home = () => {
-    return <div>Home</div>;
+    return (
+        <div className="home_container">
+            <div className="grid wideS">
+                <div className="home_wrap">
+                    <div className="home_top_container">
+                        <div className="home_top-title">
+                            <h1>Truyện Top</h1>
+                        </div>
+                        <div className="row">
+                            <div className="col c-12 m-0 l-0">
+                                <SwiperHome num={2} />
+                            </div>
+                            <div className="col c-0 m-12 l-12">
+                                <SwiperHome num={5} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 };
 
 export default Home;
