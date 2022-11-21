@@ -4,20 +4,18 @@
     padding:0;
     box-sizing: inherit;
 }
-
+.App{
+  overflow: hidden;
+}
 html{
     box-sizing: border-box;
     font-size: 62.5%;
 }
 @media only screen and (max-width:739px){
-    html{
-      font-size: 30.5%;
-      box-sizing: border-box;
-    }
+  html{
+    font-size: 50%;
+    box-sizing: border-box;
   }
-  @media only screen and (min-width:740px) and (max-width:1023px){
-    html{
-      font-size: 50%;
-      box-sizing: border-box;
-    }
 }
+
+  

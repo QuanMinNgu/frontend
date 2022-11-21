@@ -1,5 +1,7 @@
 import React from "react";
+import Card from "~/card/Card";
 import SwiperHome from "~/swiper/SwiperHome";
+import KindNavHome from "./KindNavHome";
 import "./style.css";
 
 const Home = () => {
@@ -19,6 +21,9 @@ const Home = () => {
                                 <SwiperHome num={5} />
                             </div>
                         </div>
+                        <KindNavHome name="truyện mới" />
+                        <KindNavHome name="truyện mới cập nhật" />
+                        <KindNavHome name="truyện hot" />
                     </div>
                 </div>
             </div>
