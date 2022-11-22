@@ -6,12 +6,18 @@
 .card_image_container{
     width: 100%;
     position: relative;
+    height: 22rem;
+    overflow: hidden;
 }
 .card_image_container > img{
-    height: 22rem;
+    height: 100%;
     width: 100%;
     object-fit: cover;
     box-shadow: 0 0 0.1rem 0.1rem rgba(0,0,0,0.1);
+    transition: all ease 0.15s;
+}
+.card_image_container > img:hover{
+    transform: scale(1.13);
 }
 .card_image_infor{
     position: absolute;
