@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
 import "./style.css";
 const Login = () => {
     const handleCallbackResponse = (response) => {
@@ -70,8 +71,25 @@ const Login = () => {
                         placeholder="Nhập mật khẩu"
                     />
                 </div>
+                <div className="login_forgotPassword">
+                    <span>
+                        <Link className="forgotPassword" to="/">
+                            Quên mật khẩu ?
+                        </Link>
+                    </span>
+                </div>
                 <div className="login_button_container">
                     <button>Đăng Nhập</button>
+                </div>
+                <div className="login_register">
+                    Bạn đã có tài khoản
+                    <Link
+                        style={{ color: "white" }}
+                        className="login_register_button"
+                        to="/register"
+                    >
+                        Đăng ký?
+                    </Link>
                 </div>
                 <div className="login_app_container">
                     <div id="loginGoogle"></div>
@@ -81,7 +99,7 @@ const Login = () => {
                                 style={{ marginRight: "0.3rem" }}
                                 className="fa-brands fa-facebook"
                             ></i>
-                            Đăng Nhập Với Facebook
+                            Đăng Nhập Bằng Facebook
                         </button>
                     </div>
                 </div>

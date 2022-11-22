@@ -30,10 +30,10 @@ const Header = () => {
                         </div>
                         <div className="col c-0 m-4 l-3">
                             <div className="auth_container">
-                                <Link className="auth_link" to="/">
+                                <Link className="auth_link" to="/login">
                                     <span>Đăng Nhập /</span>
                                 </Link>
-                                <Link className="auth_link" to="/">
+                                <Link className="auth_link" to="/register">
                                     <span>Đăng Ký</span>
                                 </Link>
                             </div>
