@@ -1,27 +1,26 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import HomeIcons from "~/components/another/HomeIcons";
 import "./style.css";
 const Login = () => {
     const handleCallbackResponse = (response) => {
         console.log(response.clientId);
     };
     useEffect(() => {
-        if (window.google) {
-            window.google.accounts.id.initialize({
-                client_id:
-                    "971862418301-k2jse3ca3e6fooeo4c4op1a9e50gt5go.apps.googleusercontent.com",
-                callback: handleCallbackResponse,
-            });
-            window.google.accounts.id.renderButton(
-                document.getElementById("loginGoogle"),
-                {
-                    theme: "outline",
-                    size: "medium",
-                }
-            );
-            window.google.accounts.id.prompt();
-        }
-    }, [window.google]);
+        window.google?.accounts?.id?.initialize({
+            client_id:
+                "971862418301-k2jse3ca3e6fooeo4c4op1a9e50gt5go.apps.googleusercontent.com",
+            callback: handleCallbackResponse,
+        });
+        window.google?.accounts?.id?.renderButton(
+            document.getElementById("loginGoogle"),
+            {
+                theme: "outline",
+                size: "medium",
+            }
+        );
+        window.google?.accounts?.id?.prompt();
+    }, [window.google?.accounts]);
 
     const handleLoginFacebook = () => {
         window.FB.login(function (response) {
@@ -61,7 +60,7 @@ const Login = () => {
                 </div>
                 <div className="login_input_container">
                     <label>Email:</label>
-                    <input type="text" name="email" placeholder="Nhập email" />
+                    <input type="text" name="email" placeholder="Nhập Email" />
                 </div>
                 <div className="login_input_container">
                     <label>Mật khẩu:</label>
@@ -73,7 +72,7 @@ const Login = () => {
                 </div>
                 <div className="login_forgotPassword">
                     <span>
-                        <Link className="forgotPassword" to="/">
+                        <Link className="forgotPassword" to="/forgot_password">
                             Quên mật khẩu ?
                         </Link>
                     </span>
@@ -104,6 +103,7 @@ const Login = () => {
                     </div>
                 </div>
             </div>
+            <HomeIcons />
         </div>
     );
 };

@@ -1,10 +1,13 @@
-import React from "react";
-import Card from "~/card/Card";
+import React, { useEffect } from "react";
 import SwiperHome from "~/swiper/SwiperHome";
 import KindNavHome from "./KindNavHome";
 import "./style.css";
 
 const Home = () => {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
         <div className="home_container">
             <div className="grid wideS">

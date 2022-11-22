@@ -1,3 +1,4 @@
+import ForgotPassword from "~/auth/ForgotPassword";
 import Login from "~/auth/Login";
 import Register from "~/auth/Register";
 import DefaultLayout from "~/components/defaultLayout/DefaultLayout";
@@ -7,6 +8,7 @@ export const publicRouter = [
     { element: Home, path: "/", exact: true, layout: DefaultLayout },
     { element: Login, path: "/login", exact: true },
     { element: Register, path: "/register", exact: true },
+    { element: ForgotPassword, path: "/forgot_password", exact: true },
 ];
 
 export const privateRouter = [];
