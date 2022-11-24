@@ -6,6 +6,7 @@
 }
 .App{
   overflow: hidden;
+  background-color: #EBEBEB;
 }
 html{
     box-sizing: border-box;
