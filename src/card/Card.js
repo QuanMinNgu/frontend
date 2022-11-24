@@ -4,7 +4,7 @@ import "./style.css";
 const Card = () => {
     return (
         <div className="card_container">
-            <Link to="/">
+            <Link to="/asdsddsa">
                 <div className="card_image_container">
                     <img src="https://i.truyenvua.com/ebook/190x247/boku-no-hero-academia_1552459650.jpg?gf=hdfgdfg&mobile=2" />
                     <div className="card_image_infor">
@@ -35,12 +35,12 @@ const Card = () => {
                 </div>
             </Link>
             <div className="card_infor">
-                <Link className="card_infor_title_wrap" to="/">
+                <Link className="card_infor_title_wrap" to="/asdsad">
                     <div className="card_infor_title">
                         Từ Hồng Nguyệt Khai Thủy ừ Hồng Nguyệt Khai Thủy
                     </div>
                 </Link>
-                <Link className="card_infor_title_wrap" to="/">
+                <Link className="card_infor_title_wrap" to="/asdsad">
                     <div className="card_infor_chapter_detail">Chapter 120</div>
                 </Link>
             </div>
