@@ -4,6 +4,7 @@ import Register from "~/auth/Register";
 import CardDetail from "~/cardDetail/CardDetail";
 import DefaultLayout from "~/components/defaultLayout/DefaultLayout";
 import Home from "~/homepage/Home";
+import MovieWatch from "~/movieWatch/MovieWatch";
 
 export const publicRouter = [
     { element: Home, path: "/", exact: true, layout: DefaultLayout },
@@ -11,6 +12,7 @@ export const publicRouter = [
     { element: Register, path: "/register", exact: true },
     { element: ForgotPassword, path: "/forgot_password", exact: true },
     { element: CardDetail, path: "/:slug", layout: DefaultLayout },
+    { element: MovieWatch, path: "/truyen-tranh/:slug", layout: DefaultLayout },
 ];
 
 export const privateRouter = [];

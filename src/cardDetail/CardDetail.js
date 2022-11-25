@@ -219,7 +219,10 @@ const CardDetail = () => {
                         </Link>
                     </div>
                     <div className="card_Detail_button_container">
-                        <Link style={{ textDecoration: "none" }} to="/">
+                        <Link
+                            style={{ textDecoration: "none" }}
+                            to="/truyen-tranh/asd"
+                        >
                             <div
                                 style={{ backgroundColor: "#8BC34A" }}
                                 className="card_Detail_button-items"

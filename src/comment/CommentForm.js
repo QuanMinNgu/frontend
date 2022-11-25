@@ -16,7 +16,7 @@ const CommentForm = () => {
                 <h1>Bình luận</h1>
             </div>
             <div className="comment_form">
-                <textarea placeholder="Nhập bình luận"></textarea>
+                <textarea placeholder="Nhập bình luận nhấn Enter để gửi"></textarea>
             </div>
             <div className="comment_items">
                 <CommentCard />

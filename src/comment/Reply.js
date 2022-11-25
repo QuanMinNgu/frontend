@@ -3,7 +3,10 @@ import "./style.css";
 const Reply = () => {
     return (
         <div className="reply_container">
-            <textarea defaultValue={"@Quang Ngu"} placeholder="Trả lời" />
+            <textarea
+                defaultValue={"@Quang Ngu"}
+                placeholder="Trả lời nhấn Enter để gửi"
+            />
         </div>
     );
 };
