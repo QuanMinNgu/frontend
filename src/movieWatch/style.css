@@ -56,3 +56,126 @@
         font-size: 1.2rem;
     }
 }
+.movie_watch_image_container{
+    margin-top: 2rem;
+}
+.movie_watch_image_items{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    min-height: 40rem;
+    position: relative;
+}
+.movie_watch_image_items > img{
+    width: 80%;
+    background-color: transparent;
+}
+.loader {
+    position: absolute;
+    top: calc(50% - 32px);
+    left: calc(50% - 32px);
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    perspective: 800px;
+  }
+  
+  .inner {
+    position: absolute;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;  
+  }
+  
+  .inner.one {
+    left: 0%;
+    top: 0%;
+    animation: rotate-one 1s linear infinite;
+    border-bottom: 3px solid black;
+  }
+  
+  .inner.two {
+    right: 0%;
+    top: 0%;
+    animation: rotate-two 1s linear infinite;
+    border-right: 3px solid black;
+  }
+  
+  .inner.three {
+    right: 0%;
+    bottom: 0%;
+    animation: rotate-three 1s linear infinite;
+    border-top: 3px solid black;
+  }
+  
+  @keyframes rotate-one {
+    0% {
+      transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
+    }
+    100% {
+      transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
+    }
+}
+  
+  @keyframes rotate-two {
+    0% {
+      transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
+    }
+    100% {
+      transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
+    }
+  }
+  
+  @keyframes rotate-three {
+    0% {
+      transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
+    }
+    100% {
+      transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
+    }
+}
+.movie_watch_comment_container{
+    width: 100%;
+    background-color: white;
+    margin-top: 2rem;
+    border-radius: 1rem;
+    padding:0 1rem;
+}
+.chapter_next_slice{
+  position: fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  z-index: 100;
+  background-color: rgba(0,0,0,0.5);
+  height: 4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color:white;
+}
+.chapter_next_button{
+  text-decoration: none;
+}
+.chapter_next_button_items{
+  width: 3rem;
+  height: 3rem;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color:black;
+  border-radius: 50%;
+  border:0.1rem solid black;
+  font-size: 1.2rem;
+}
+.chapter_next_slice > select{
+    width: auto;
+    margin:0 0.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    outline: none;
+    font-size: 1.6rem;
+    padding:0 1rem;
+}

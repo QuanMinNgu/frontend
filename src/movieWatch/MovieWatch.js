@@ -1,5 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import CommentForm from "~/comment/CommentForm";
+import ScrollTop from "~/components/scroll/ScrollTop";
+import ImageWatch from "./ImageWatch";
 import "./style.css";
 const MovieWatch = () => {
     return (
@@ -62,7 +65,37 @@ const MovieWatch = () => {
                         </Link>
                     </div>
                 </div>
+                <div className="movie_watch_image_container">
+                    <ImageWatch url="https://res.cloudinary.com/sttruyen/image/upload/v1669434457/Sttruyen/8_aljxfh.png" />
+                    <ImageWatch url="https://res.cloudinary.com/sttruyen/image/upload/v1669434476/Sttruyen/9_h5ripv.png" />
+                    <ImageWatch url="https://res.cloudinary.com/sttruyen/image/upload/v1669434480/Sttruyen/10_bl46m9.png" />
+                    <ImageWatch url="https://res.cloudinary.com/sttruyen/image/upload/v1669434550/Sttruyen/11_lc5pe7.png" />
+                    <ImageWatch url="https://res.cloudinary.com/sttruyen/image/upload/v1669434558/Sttruyen/12_warevp.png" />
+                </div>
+                <div className="movie_watch_comment_container">
+                    <CommentForm />
+                </div>
             </div>
+            <div className="chapter_next_slice">
+                <Link className="chapter_next_button" to="/">
+                    <div className="chapter_next_button_items">
+                        <i className="fa-solid fa-angles-left"></i>
+                    </div>
+                </Link>
+                <select>
+                    <option>Chương 1</option>
+                    <option>Chương 1</option>
+                    <option>Chương 1</option>
+                    <option>Chương 1</option>
+                    <option>Chương 1222</option>
+                </select>
+                <Link className="chapter_next_button" to="/">
+                    <div className="chapter_next_button_items">
+                        <i className="fa-solid fa-angles-right"></i>
+                    </div>
+                </Link>
+            </div>
+            <ScrollTop />
         </div>
     );
 };
