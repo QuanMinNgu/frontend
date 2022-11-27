@@ -9,9 +9,11 @@ import { useSelector } from "react-redux";
 function App() {
     const auth = useSelector((state) => state.auth);
     useEffect(() => {
-        const decoded = jwt_decode(auth.user?.accessToken);
-        console.log(decoded);
-    }, []);
+        if (auth.user?.accessToken) {
+            const decoded = jwt_decode(auth.user?.accessToken);
+            console.log(decoded);
+        }
+    }, [auth.user?.accessToken]);
     return (
         <Router>
             <div className="App">
