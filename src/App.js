@@ -4,28 +4,53 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { publicRouter } from "./routes/routes";
 import { ToastContainer } from "react-toastify";
 import jwt_decode from "jwt-decode";
-import { useEffect } from "react";
+import { createContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+
+export const UserContext = createContext();
+
 function App() {
     const auth = useSelector((state) => state.auth);
+
+    const [store, setStore] = useState({ rule: "user" });
+
     useEffect(() => {
         if (auth.user?.accessToken) {
             const decoded = jwt_decode(auth.user?.accessToken);
-            console.log(decoded);
+            setStore({ rule: decoded.rule });
         }
     }, [auth.user?.accessToken]);
     return (
-        <Router>
-            <div className="App">
-                <Routes>
-                    {publicRouter.map((item, index) => {
-                        const Page = item.element;
-                        return item.exact ? (
-                            item.layout ? (
+        <UserContext.Provider value={{ store, setStore }}>
+            <Router>
+                <div className="App">
+                    <Routes>
+                        {publicRouter.map((item, index) => {
+                            const Page = item.element;
+                            return item.exact ? (
+                                item.layout ? (
+                                    <Route
+                                        key={index + "routers"}
+                                        path={item.path}
+                                        exact
+                                        element={
+                                            <item.layout>
+                                                <Page />
+                                            </item.layout>
+                                        }
+                                    />
+                                ) : (
+                                    <Route
+                                        key={index + "routers"}
+                                        path={item.path}
+                                        exact
+                                        element={<Page />}
+                                    />
+                                )
+                            ) : item.layout ? (
                                 <Route
                                     key={index + "routers"}
                                     path={item.path}
-                                    exact
                                     element={
                                         <item.layout>
                                             <Page />
@@ -36,37 +61,20 @@ function App() {
                                 <Route
                                     key={index + "routers"}
                                     path={item.path}
-                                    exact
                                     element={<Page />}
                                 />
-                            )
-                        ) : item.layout ? (
-                            <Route
-                                key={index + "routers"}
-                                path={item.path}
-                                element={
-                                    <item.layout>
-                                        <Page />
-                                    </item.layout>
-                                }
-                            />
-                        ) : (
-                            <Route
-                                key={index + "routers"}
-                                path={item.path}
-                                element={<Page />}
-                            />
-                        );
-                    })}
-                </Routes>
-            </div>
-            <div className="app-pc">
-                <ToastContainer
-                    autoClose={1500}
-                    style={{ fontSize: "1.5rem" }}
-                />
-            </div>
-        </Router>
+                            );
+                        })}
+                    </Routes>
+                </div>
+                <div className="app-pc">
+                    <ToastContainer
+                        autoClose={1500}
+                        style={{ fontSize: "1.5rem" }}
+                    />
+                </div>
+            </Router>
+        </UserContext.Provider>
     );
 }
 

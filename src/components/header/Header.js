@@ -1,8 +1,22 @@
-import React from "react";
+import React, { useContext } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { UserContext } from "~/App";
+import { isLogOut } from "~/redux/slice/auth";
 import KindsNavbar from "../another/KindsNavbar";
 import "./style.css";
 const Header = () => {
+    const { store } = useContext(UserContext);
+
+    const auth = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
+
+    const handleSignOut = () => {
+        dispatch(isLogOut());
+        toast.success("Đăng xuất thành công.");
+    };
+
     return (
         <div className="header_wrap">
             <div className="header_wrap-head">
@@ -29,14 +43,44 @@ const Header = () => {
                             </div>
                         </div>
                         <div className="col c-0 m-4 l-3">
-                            <div className="auth_container">
-                                <Link className="auth_link" to="/login">
-                                    <span>Đăng Nhập /</span>
-                                </Link>
-                                <Link className="auth_link" to="/register">
-                                    <span>Đăng Ký</span>
-                                </Link>
-                            </div>
+                            {auth.user?.accessToken ? (
+                                <div className="auth_container">
+                                    <div className="auth_container_exist">
+                                        <div className="auth_container_image">
+                                            <img src={auth.user?.image} />
+                                        </div>
+                                        <div className="auth_container_name">
+                                            <p className="auth_container_name_detail">
+                                                {auth.user?.name}
+                                            </p>
+                                            <i className="fa-solid fa-sort-down"></i>
+                                        </div>
+                                        <div className="auth_container_exist_detail">
+                                            <div className="auth_container_exist_detail_items">
+                                                <p>Thông tin</p>
+                                            </div>
+                                            <div className="auth_container_exist_detail_items">
+                                                <p>Truyện theo dõi</p>
+                                            </div>
+                                            <div
+                                                onClick={handleSignOut}
+                                                className="auth_container_exist_detail_items"
+                                            >
+                                                <p>Đăng xuất</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="auth_container">
+                                    <Link className="auth_link" to="/login">
+                                        <span>Đăng Nhập /</span>
+                                    </Link>
+                                    <Link className="auth_link" to="/register">
+                                        <span>Đăng Ký</span>
+                                    </Link>
+                                </div>
+                            )}
                         </div>
                         <div className="col c-1 m-0 l-0">
                             <div className="mobile_header-bars">
