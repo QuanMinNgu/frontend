@@ -1,18 +1,72 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import HomeIcons from "~/components/another/HomeIcons";
+import { isFailing, isLoading, isLogin, isSuccess } from "~/redux/slice/auth";
 import "./style.css";
 const Register = () => {
+    const emailRef = useRef();
+    const passwordRef = useRef();
+    const rePasswordRef = useRef();
+    const nameRef = useRef();
+    const navigate = useNavigate();
+
+    const dispatch = useDispatch();
+
+    const handleRegister = async () => {
+        const user = {
+            email: emailRef.current?.value,
+            password: passwordRef.current?.value,
+            name: nameRef.current?.value,
+            rePassword: rePasswordRef.current?.value,
+        };
+        if (!user.email || !user.password || !user.name || !user.rePassword) {
+            return toast.error("Vui lòng điề hết thông tin.");
+        }
+        if (user.password.length < 8) {
+            return toast.error("Mật khẩu cần lớn hơn 8 ký tự.");
+        }
+        if (user.password !== user.rePassword) {
+            return toast.error("Mật khẩu không khớp.");
+        }
+        dispatch(isLoading());
+        try {
+            const data = await axios.post("/api/auth/register", {
+                ...user,
+            });
+            toast.success(data?.data?.msg);
+            dispatch(isSuccess());
+            navigate("/login");
+        } catch (err) {
+            dispatch(isFailing());
+            toast.error(err?.response?.data?.msg);
+        }
+    };
+
+    const handleAppearing = (e) => {
+        if (e.target?.checked) {
+            document.getElementById("pass").type = "text";
+            document.getElementById("repass").type = "text";
+        } else {
+            document.getElementById("pass").type = "password";
+            document.getElementById("repass").type = "password";
+        }
+    };
+
     const handleRegisterGoogle = async (response) => {
+        dispatch(isLoading());
         try {
             const data = await axios.post("/api/auth/google/register", {
                 clientId: response.client_id,
                 token: response.credential,
             });
             toast.success(data?.data?.msg);
+            dispatch(isLogin(data?.data));
+            navigate("/");
         } catch (err) {
+            dispatch(isFailing());
             toast.error(err?.response?.data?.msg);
         }
     };
@@ -20,6 +74,7 @@ const Register = () => {
     const handleLoginFacebook = () => {
         window.FB.login(
             function (response) {
+                dispatch(isLoading());
                 const data = axios
                     .post("/api/auth/facebook/register", {
                         userId: response?.authResponse?.userID,
@@ -27,8 +82,11 @@ const Register = () => {
                     })
                     .then((res) => {
                         toast.success(res?.data?.msg);
+                        dispatch(isLogin(res?.data));
+                        navigate("/");
                     })
                     .catch((err) => {
+                        dispatch(isFailing());
                         toast.error(err?.response?.data?.msg);
                     });
             },
@@ -83,26 +141,52 @@ const Register = () => {
                 </div>
                 <div className="login_input_container">
                     <label>Email:</label>
-                    <input type="text" name="email" placeholder="Nhập Email" />
+                    <input
+                        ref={emailRef}
+                        type="text"
+                        name="email"
+                        placeholder="Nhập Email"
+                    />
+                </div>
+                <div className="login_input_container">
+                    <label>Tên hiển thị:</label>
+                    <input
+                        ref={nameRef}
+                        type="text"
+                        name="name"
+                        placeholder="Nhập tên hiển thị"
+                    />
                 </div>
                 <div className="login_input_container">
                     <label>Mật khẩu:</label>
                     <input
+                        ref={passwordRef}
                         type="password"
                         name="Password"
+                        id="pass"
                         placeholder="Nhập mật khẩu"
                     />
                 </div>
                 <div className="login_input_container">
                     <label>Nhập Lại Mật khẩu:</label>
                     <input
+                        ref={rePasswordRef}
                         type="password"
                         name="re-Password"
+                        id="repass"
                         placeholder="Nhập lại mật khẩu"
                     />
                 </div>
+                <div className="appearPassword">
+                    <label htmlFor="appearing">Hiển thị mật khẩu?</label>
+                    <input
+                        onChange={(e) => handleAppearing(e)}
+                        id="appearing"
+                        type="checkbox"
+                    />
+                </div>
                 <div className="login_button_container">
-                    <button>Đăng Ký</button>
+                    <button onClick={handleRegister}>Đăng Ký</button>
                 </div>
                 <div className="login_register">
                     Bạn đã có tài khoản

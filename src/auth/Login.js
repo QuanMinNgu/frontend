@@ -1,18 +1,62 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useRef } from "react";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import HomeIcons from "~/components/another/HomeIcons";
+import { isFailing, isLoading, isLogin } from "~/redux/slice/auth";
 import "./style.css";
 const Login = () => {
+    const emailRef = useRef();
+    const passwordRef = useRef();
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const handleLogin = async () => {
+        const user = {
+            email: emailRef.current?.value,
+            password: passwordRef.current?.value,
+        };
+        if (!user.email || !user.password) {
+            return toast.error("Vui lòng điền hết thông tin.");
+        }
+        if (user.password.length < 8) {
+            return toast.error("Mật khẩu không chính xác.");
+        }
+        dispatch(isLoading());
+        try {
+            const data = await axios.post("/api/auth/login", {
+                ...user,
+            });
+            toast.success(data?.data);
+            dispatch(isLogin(data?.data));
+            navigate("/");
+        } catch (err) {
+            dispatch(isFailing());
+            toast.error(err?.response?.data?.msg);
+        }
+    };
+
+    const handleAppearing = (e) => {
+        if (e.target?.checked) {
+            document.getElementById("pass").type = "text";
+        } else {
+            document.getElementById("pass").type = "password";
+        }
+    };
     const handleCallbackResponse = async (response) => {
+        dispatch(isLoading());
         try {
             const data = await axios.post("/api/auth/google/login", {
                 clientId: response.client_id,
                 token: response.credential,
             });
-            toast.success(data?.data?.msg);
+            toast.success(data?.data);
+            dispatch(isLogin(data?.data));
+            navigate("/");
         } catch (err) {
+            dispatch(isFailing());
             toast.error(err?.response?.data?.msg);
         }
     };
@@ -35,6 +79,7 @@ const Login = () => {
     const handleLoginFacebook = () => {
         window.FB.login(
             function (response) {
+                dispatch(isLoading());
                 const data = axios
                     .post("/api/auth/facebook/login", {
                         userId: response?.authResponse?.userID,
@@ -42,9 +87,12 @@ const Login = () => {
                     })
                     .then((res) => {
                         toast.success(res?.data?.msg);
+                        dispatch(isLogin(res?.data));
+                        navigate("/");
                     })
                     .catch((err) => {
                         toast.error(err?.response?.data?.msg);
+                        dispatch(isFailing());
                     });
             },
             { scope: "email" }
@@ -83,14 +131,21 @@ const Login = () => {
                 </div>
                 <div className="login_input_container">
                     <label>Email:</label>
-                    <input type="text" name="email" placeholder="Nhập Email" />
+                    <input
+                        ref={emailRef}
+                        type="text"
+                        name="email"
+                        placeholder="Nhập Email"
+                    />
                 </div>
                 <div className="login_input_container">
                     <label>Mật khẩu:</label>
                     <input
+                        ref={passwordRef}
                         type="password"
                         name="Password"
                         placeholder="Nhập mật khẩu"
+                        id="pass"
                     />
                 </div>
                 <div className="login_forgotPassword">
@@ -100,8 +155,16 @@ const Login = () => {
                         </Link>
                     </span>
                 </div>
+                <div className="appearPassword">
+                    <label htmlFor="appearing">Hiển thị mật khẩu?</label>
+                    <input
+                        onChange={(e) => handleAppearing(e)}
+                        id="appearing"
+                        type="checkbox"
+                    />
+                </div>
                 <div className="login_button_container">
-                    <button>Đăng Nhập</button>
+                    <button onClick={handleLogin}>Đăng Nhập</button>
                 </div>
                 <div className="login_register">
                     Bạn đã có tài khoản
