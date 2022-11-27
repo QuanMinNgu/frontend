@@ -1,10 +1,15 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 import CommentForm from "~/comment/CommentForm";
 import ScrollTop from "~/components/scroll/ScrollTop";
 import ImageWatch from "./ImageWatch";
 import "./style.css";
 const MovieWatch = () => {
+    const { slug } = useParams();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [slug]);
     return (
         <div className="movie_watch_container">
             <div className="grid wideS">

@@ -1,12 +1,17 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import CommentForm from "~/comment/CommentForm";
 import "./style.css";
 const CardDetail = () => {
     const [currentStar, setCurrentStar] = useState(5);
+    const { slug } = useParams();
 
     const allStar = Array(5).fill(0);
     const [hoverStar, setHoverStar] = useState(null);
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [slug]);
 
     return (
         <div className="cardDetail_container">

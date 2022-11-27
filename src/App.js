@@ -2,6 +2,7 @@ import "./App.css";
 import "./style.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { publicRouter } from "./routes/routes";
+import { ToastContainer } from "react-toastify";
 function App() {
     return (
         <Router>
@@ -48,6 +49,12 @@ function App() {
                         );
                     })}
                 </Routes>
+            </div>
+            <div className="app-pc">
+                <ToastContainer
+                    autoClose={1500}
+                    style={{ fontSize: "1.5rem" }}
+                />
             </div>
         </Router>
     );

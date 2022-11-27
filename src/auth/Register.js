@@ -1,16 +1,39 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import HomeIcons from "~/components/another/HomeIcons";
 import "./style.css";
 const Register = () => {
-    const handleRegisterGoogle = (response) => {
-        console.log(response.clientId);
+    const handleRegisterGoogle = async (response) => {
+        try {
+            const data = await axios.post("/api/auth/google/register", {
+                clientId: response.client_id,
+                token: response.credential,
+            });
+            toast.success(data?.data?.msg);
+        } catch (err) {
+            toast.error(err?.response?.data?.msg);
+        }
     };
 
     const handleLoginFacebook = () => {
-        window.FB.login((response) => {
-            console.log(response);
-        });
+        window.FB.login(
+            function (response) {
+                const data = axios
+                    .post("/api/auth/facebook/register", {
+                        userId: response?.authResponse?.userID,
+                        token: response?.authResponse?.accessToken,
+                    })
+                    .then((res) => {
+                        toast.success(res?.data?.msg);
+                    })
+                    .catch((err) => {
+                        toast.error(err?.response?.data?.msg);
+                    });
+            },
+            { scope: "email" }
+        );
     };
 
     useEffect(() => {

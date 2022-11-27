@@ -1,10 +1,20 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import HomeIcons from "~/components/another/HomeIcons";
 import "./style.css";
 const Login = () => {
-    const handleCallbackResponse = (response) => {
-        console.log(response.clientId);
+    const handleCallbackResponse = async (response) => {
+        try {
+            const data = await axios.post("/api/auth/google/login", {
+                clientId: response.client_id,
+                token: response.credential,
+            });
+            toast.success(data?.data?.msg);
+        } catch (err) {
+            toast.error(err?.response?.data?.msg);
+        }
     };
     useEffect(() => {
         window.google?.accounts?.id?.initialize({
@@ -23,9 +33,22 @@ const Login = () => {
     }, [window.google?.accounts]);
 
     const handleLoginFacebook = () => {
-        window.FB.login(function (response) {
-            console.log(response);
-        });
+        window.FB.login(
+            function (response) {
+                const data = axios
+                    .post("/api/auth/facebook/login", {
+                        userId: response?.authResponse?.userID,
+                        token: response?.authResponse?.accessToken,
+                    })
+                    .then((res) => {
+                        toast.success(res?.data?.msg);
+                    })
+                    .catch((err) => {
+                        toast.error(err?.response?.data?.msg);
+                    });
+            },
+            { scope: "email" }
+        );
     };
 
     useEffect(() => {
