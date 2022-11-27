@@ -3,7 +3,15 @@ import "./style.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { publicRouter } from "./routes/routes";
 import { ToastContainer } from "react-toastify";
+import jwt_decode from "jwt-decode";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 function App() {
+    const auth = useSelector((state) => state.auth);
+    useEffect(() => {
+        const decoded = jwt_decode(auth.user?.accessToken);
+        console.log(decoded);
+    }, []);
     return (
         <Router>
             <div className="App">

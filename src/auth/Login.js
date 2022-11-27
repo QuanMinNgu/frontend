@@ -29,7 +29,7 @@ const Login = () => {
             const data = await axios.post("/api/auth/login", {
                 ...user,
             });
-            toast.success(data?.data);
+            toast.success(data?.data?.msg);
             dispatch(isLogin(data?.data));
             navigate("/");
         } catch (err) {
@@ -52,7 +52,7 @@ const Login = () => {
                 clientId: response.client_id,
                 token: response.credential,
             });
-            toast.success(data?.data);
+            toast.success(data?.data?.msg);
             dispatch(isLogin(data?.data));
             navigate("/");
         } catch (err) {
