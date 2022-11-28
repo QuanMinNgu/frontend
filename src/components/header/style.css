@@ -189,6 +189,7 @@
     box-shadow: 0 0 0.2rem 0.08rem rgba(0,0,0,0.7); 
     border-radius: 0.3rem;
     padding:1rem;
+    z-index: 200;
     display: none;
 }
 .auth_container_exist:hover .auth_container_exist_detail{
@@ -231,10 +232,11 @@
     align-items: center;
     border-bottom: 0.1rem solid rgba(0,0,0,0.1);
     justify-content: center;
+    overflow: hidden;
 }
 .auth_container_exist_detail_items:hover{
     background-color: rgba(0,0,0,0.1);
 }
-.auth_container_exist_detail_items:last-child{
+.auth_container_exist_detail_items_Links_last{
     border-bottom: none;
 }

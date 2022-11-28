@@ -1,3 +1,4 @@
+import AdminHome from "~/admin/AdminHome";
 import ActiveAccount from "~/auth/ActiveAccount";
 import ForgotPassword from "~/auth/ForgotPassword";
 import Login from "~/auth/Login";
@@ -6,6 +7,7 @@ import CardDetail from "~/cardDetail/CardDetail";
 import DefaultLayout from "~/components/defaultLayout/DefaultLayout";
 import Home from "~/homepage/Home";
 import MovieWatch from "~/movieWatch/MovieWatch";
+import NotFound from "~/notfound/NotFound";
 
 export const publicRouter = [
     { element: Home, path: "/", exact: true, layout: DefaultLayout },
@@ -21,4 +23,11 @@ export const publicRouter = [
     },
 ];
 
-export const privateRouter = [];
+export const privateRouter = [
+    {
+        element: AdminHome,
+        path: "/admin/manager",
+        exact: true,
+        layout: DefaultLayout,
+    },
+];

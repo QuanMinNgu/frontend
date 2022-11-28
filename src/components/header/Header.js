@@ -56,11 +56,34 @@ const Header = () => {
                                             <i className="fa-solid fa-sort-down"></i>
                                         </div>
                                         <div className="auth_container_exist_detail">
-                                            <div className="auth_container_exist_detail_items">
-                                                <p>Thông tin</p>
-                                            </div>
+                                            {store.rule === "admin" && (
+                                                <Link
+                                                    style={{
+                                                        textDecoration: "none",
+                                                    }}
+                                                    to="/admin/manager"
+                                                >
+                                                    <div className="auth_container_exist_detail_items">
+                                                        <p>Quản lý</p>
+                                                    </div>
+                                                </Link>
+                                            )}
+                                            <Link
+                                                className="auth_container_exist_detail_items_Links"
+                                                style={{
+                                                    textDecoration: "none",
+                                                }}
+                                                to="/admin/manager"
+                                            >
+                                                <div className="auth_container_exist_detail_items">
+                                                    <p>Thông tin</p>
+                                                </div>
+                                            </Link>
                                             <div className="auth_container_exist_detail_items">
                                                 <p>Truyện theo dõi</p>
+                                            </div>
+                                            <div className="auth_container_exist_detail_items">
+                                                <p>Truyện đã đọc</p>
                                             </div>
                                             <div
                                                 onClick={handleSignOut}
