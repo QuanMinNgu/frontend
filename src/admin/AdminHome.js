@@ -125,7 +125,7 @@ const AdminHome = () => {
                         <h1>Quản lí truyện</h1>
                     </div>
                     <div className="manager_movie_create_container">
-                        <Link to="/">
+                        <Link to="/admin/create">
                             <button className="manager_movie_create">
                                 Tạo truyện mới
                             </button>

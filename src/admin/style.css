@@ -219,3 +219,102 @@
     font-size: 1.4rem;
     text-align: center;
 }
+.create_wrap{
+    width: 100%;
+    min-height: 100vh;
+}
+.create_title{
+    margin-top: 4rem;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 1.8rem;
+}
+.create_form{
+    width: 100%;
+    margin-top: 5rem;
+    display: flex;
+    justify-content: center;
+}
+.create_form > label{
+    min-width: 15%;
+    font-size: 2.5rem;
+}
+.create_form > textarea{
+    width: 60%;
+    min-height: 6rem;
+    border-radius: 0.5rem;
+    padding:0.5rem;
+    outline: none;
+    font-size: 2rem;
+    resize: vertical;
+}
+.create_kinds{
+    margin-top: 5rem;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.create_kinds_items{
+    display: flex;
+    align-items: center;
+    margin:0 1.5rem;
+    margin-bottom: 1rem;
+}
+.create_kinds_items > label{
+    font-size: 1.6rem;
+    cursor: pointer;
+}
+.create_kinds_items > input{
+    width: 2rem;
+    height: 2rem;
+    margin-left: 0.5rem;
+}
+.create_button{
+    margin-top: 5rem;
+    text-align: center;
+    margin-bottom: 5rem;
+}
+.create_button > button{
+    width: 40%;
+    height: 5rem;
+    border-radius: 5rem;
+    cursor: pointer;
+    outline: none;
+    font-size: 2rem;
+    transition: all ease 0.1s;
+}
+.create_button > button:hover{
+    transform: scale(0.9);
+}
+.create_image{
+    display: flex;
+    justify-content: center;
+    margin:3rem 0;
+}
+.movie_drop_zone{
+    width: 25rem;
+    height: 30rem;
+    background-color: white;
+}
+.movie_drop_zone_wrap{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    cursor: pointer;
+    position: relative;
+}
+.image_create_container{
+    position: absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+}
+.image_create_container > img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

@@ -1,4 +1,5 @@
 import AdminHome from "~/admin/AdminHome";
+import Create from "~/admin/Create";
 import ActiveAccount from "~/auth/ActiveAccount";
 import ForgotPassword from "~/auth/ForgotPassword";
 import Login from "~/auth/Login";
@@ -27,6 +28,12 @@ export const privateRouter = [
     {
         element: AdminHome,
         path: "/admin/manager",
+        exact: true,
+        layout: DefaultLayout,
+    },
+    {
+        element: Create,
+        path: "/admin/create",
         exact: true,
         layout: DefaultLayout,
     },
