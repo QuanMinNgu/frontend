@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { UserContext } from "~/App";
 import "./style.css";
-const Create = () => {
+const Update = () => {
     const [image, setImage] = useState("");
     const imageRef = useRef("");
     const titleRef = useRef(null);
@@ -264,4 +264,4 @@ const Create = () => {
     );
 };
 
-export default Create;
+export default Update;

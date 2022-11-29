@@ -12,6 +12,8 @@ const AdminHome = () => {
     const [kinds, setKinds] = useState([]);
     const [countries, setCountries] = useState([]);
 
+    const [movie, setMovie] = useState([]);
+
     useEffect(() => {
         let here = true;
         axios
@@ -28,6 +30,23 @@ const AdminHome = () => {
             here = false;
         };
     }, []);
+    useEffect(() => {
+        let here = true;
+        axios
+            .get("/api/movie")
+            .then((res) => {
+                if (here) {
+                    setMovie(res?.data?.Products);
+                }
+            })
+            .catch((err) => {
+                toast.error(err?.response?.data?.msg);
+            });
+        return () => {
+            here = false;
+        };
+    }, []);
+
     useEffect(() => {
         let here = true;
         axios
@@ -191,21 +210,14 @@ const AdminHome = () => {
                     </div>
                     <div className="manager_movie_cards_container">
                         <div className="row">
-                            <div className="col c-6 m-4 l-3">
-                                <AdminCard />
-                            </div>
-                            <div className="col c-6 m-4 l-3">
-                                <AdminCard />
-                            </div>
-                            <div className="col c-6 m-4 l-3">
-                                <AdminCard />
-                            </div>
-                            <div className="col c-6 m-4 l-3">
-                                <AdminCard />
-                            </div>
-                            <div className="col c-6 m-4 l-3">
-                                <AdminCard />
-                            </div>
+                            {movie?.map((item) => (
+                                <div
+                                    key={item?._id + "Admin"}
+                                    className="col c-6 m-4 l-3"
+                                >
+                                    <AdminCard item={item} />
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>

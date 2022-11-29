@@ -48,10 +48,16 @@ const Login = () => {
     const handleCallbackResponse = async (response) => {
         dispatch(isLoading());
         try {
-            const data = await axios.post("/api/auth/google/login", {
-                clientId: response.client_id,
-                token: response.credential,
-            });
+            const data = await axios.post(
+                "/api/auth/google/login",
+                {
+                    clientId: response.client_id,
+                    token: response.credential,
+                },
+                {
+                    withCredentials: true,
+                }
+            );
             toast.success(data?.data?.msg);
             dispatch(isLogin(data?.data));
             navigate("/");

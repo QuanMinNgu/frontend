@@ -1,12 +1,12 @@
 import React from "react";
 import "./style.css";
-const AdminCard = () => {
+const AdminCard = ({ item }) => {
     return (
         <div className="adminCard_container">
             <div className="adminCard_image_container">
-                <img src="//st.ntcdntempv3.com/data/comics/80/toi-den-tu-dia-nguc.jpg" />
+                <img src={item?.image} />
                 <div className="adminCard_detail">
-                    <span>Được chuyển sinh thành một hoàng tử thứ mười ba</span>
+                    <span>{item?.title}</span>
                 </div>
             </div>
             <div className="adminCard_button_container">
