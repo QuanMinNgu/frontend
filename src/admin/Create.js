@@ -1,9 +1,47 @@
-import React, { useCallback, useRef, useState } from "react";
+import axios from "axios";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { toast } from "react-toastify";
 import "./style.css";
 const Create = () => {
     const [image, setImage] = useState("");
     const imageRef = useRef("");
+
+    const [kinds, setKinds] = useState([]);
+    const [countries, setCountries] = useState([]);
+
+    useEffect(() => {
+        let here = true;
+        axios
+            .get("/api/kind")
+            .then((res) => {
+                if (here) {
+                    setKinds(res?.data?.kinds);
+                }
+            })
+            .catch((err) => {
+                toast.error(err?.response?.data?.msg);
+            });
+        return () => {
+            here = false;
+        };
+    }, []);
+    useEffect(() => {
+        let here = true;
+        axios
+            .get("/api/country")
+            .then((res) => {
+                if (here) {
+                    setCountries(res?.data?.countries);
+                }
+            })
+            .catch((err) => {
+                toast.error(err?.response?.data?.msg);
+            });
+        return () => {
+            here = false;
+        };
+    }, []);
 
     const onDrop = useCallback((acceptedFiles) => {
         const url = URL.createObjectURL(acceptedFiles[0]);
@@ -62,18 +100,27 @@ const Create = () => {
                         />
                     </div>
                     <div className="create_kinds">
-                        <div className="create_kinds_items">
-                            <label>Hành động</label>
-                            <input type="checkbox" />
-                        </div>
-                        <div className="create_kinds_items">
-                            <label>Hành động</label>
-                            <input type="checkbox" />
-                        </div>
-                        <div className="create_kinds_items">
-                            <label>Hành động</label>
-                            <input type="checkbox" />
-                        </div>
+                        {kinds.map((item) => (
+                            <div
+                                key={item._id + "create"}
+                                className="create_kinds_items"
+                            >
+                                <label htmlFor={item?._id}>{item?.name}</label>
+                                <input id={item?._id} type="checkbox" />
+                            </div>
+                        ))}
+                    </div>
+                    <div className="create_country">
+                        <select>
+                            {countries.map((item) => (
+                                <option
+                                    value={item?._id}
+                                    key={item?._id + "craete"}
+                                >
+                                    {item?.name}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                     <div className="create_button">
                         <button>Tạo mới</button>

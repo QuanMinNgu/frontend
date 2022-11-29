@@ -1,8 +1,93 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import AdminCard from "./AdminCard";
 import "./style.css";
 const AdminHome = () => {
+    const kindRef = useRef(null);
+    const countryRef = useRef(null);
+
+    const [kinds, setKinds] = useState([]);
+    const [countries, setCountries] = useState([]);
+
+    useEffect(() => {
+        let here = true;
+        axios
+            .get("/api/kind")
+            .then((res) => {
+                if (here) {
+                    setKinds(res?.data?.kinds);
+                }
+            })
+            .catch((err) => {
+                toast.error(err?.response?.data?.msg);
+            });
+        return () => {
+            here = false;
+        };
+    }, []);
+    useEffect(() => {
+        let here = true;
+        axios
+            .get("/api/country")
+            .then((res) => {
+                if (here) {
+                    setCountries(res?.data?.countries);
+                }
+            })
+            .catch((err) => {
+                toast.error(err?.response?.data?.msg);
+            });
+        return () => {
+            here = false;
+        };
+    }, []);
+
+    const auth = useSelector((state) => state.auth);
+
+    const handleCreate = async (typeRef, url) => {
+        if (!typeRef.current?.value) {
+            return toast.error("Vui lòng điền thông tin.");
+        }
+        try {
+            const data = await axios.post(
+                url,
+                {
+                    name: typeRef.current?.value,
+                },
+                {
+                    headers: {
+                        token: `Bearer ${auth.user?.accessToken}`,
+                    },
+                }
+            );
+            toast.success(data?.data?.msg);
+            typeRef.current.value = "";
+        } catch (err) {
+            toast.error(err?.response?.data?.msg);
+        }
+    };
+
+    const handleDelete = async (url, id, typeCheck, setTypeCheck) => {
+        const check = window.prompt("Bạn có muốn xóa không?", "Yes");
+        if (check === "Yes") {
+            const newOne = typeCheck.filter((item) => item._id !== id);
+            setTypeCheck([...newOne]);
+            try {
+                const data = await axios.delete(url, {
+                    headers: {
+                        token: `Bearer ${auth.user?.accessToken}`,
+                    },
+                });
+                toast.success(data?.data?.msg);
+            } catch (err) {
+                toast.error(err?.response?.data?.msg);
+            }
+        }
+    };
+
     return (
         <div className="manager_container">
             <div className="grid wideS">
@@ -12,40 +97,38 @@ const AdminHome = () => {
                             <h1>Thể Loại</h1>
                         </div>
                         <div className="manager_kinds_input">
-                            <input type="text" placeholder="Thể loại" />
-                            <button>Tạo thể loại</button>
+                            <input
+                                ref={kindRef}
+                                type="text"
+                                placeholder="Thể loại"
+                            />
+                            <button
+                                onClick={() =>
+                                    handleCreate(kindRef, "/api/kind/create")
+                                }
+                            >
+                                Tạo thể loại
+                            </button>
                         </div>
                         <ul className="manager_kinds_items_container">
-                            <li>
-                                Hành động
-                                <div className="manager_kinds_items_delete">
-                                    Xóa
-                                </div>
-                            </li>
-                            <li>
-                                Hài hước
-                                <div className="manager_kinds_items_delete">
-                                    Xóa
-                                </div>
-                            </li>
-                            <li>
-                                Buồn
-                                <div className="manager_kinds_items_delete">
-                                    Xóa
-                                </div>
-                            </li>
-                            <li>
-                                Buồn
-                                <div className="manager_kinds_items_delete">
-                                    Xóa
-                                </div>
-                            </li>
-                            <li>
-                                Buồn
-                                <div className="manager_kinds_items_delete">
-                                    Xóa
-                                </div>
-                            </li>
+                            {kinds.map((item) => (
+                                <li key={item?._id}>
+                                    {item?.name}
+                                    <div
+                                        onClick={() =>
+                                            handleDelete(
+                                                `/api/kind/delete/${item?._id}`,
+                                                item?._id,
+                                                kinds,
+                                                setKinds
+                                            )
+                                        }
+                                        className="manager_kinds_items_delete"
+                                    >
+                                        Xóa
+                                    </div>
+                                </li>
+                            ))}
                         </ul>
                     </div>
                     <div className="manager_countries_container">
@@ -53,70 +136,41 @@ const AdminHome = () => {
                             <h1>Quốc gia</h1>
                         </div>
                         <div className="manager_kinds_input">
-                            <input type="text" placeholder="Quốc gia" />
-                            <button>Tạo quốc gia</button>
+                            <input
+                                ref={countryRef}
+                                type="text"
+                                placeholder="Quốc gia"
+                            />
+                            <button
+                                onClick={() =>
+                                    handleCreate(
+                                        countryRef,
+                                        "/api/country/create"
+                                    )
+                                }
+                            >
+                                Tạo quốc gia
+                            </button>
                         </div>
                         <ul className="manager_kinds_items_container">
-                            <li>
-                                Hành động
-                                <div className="manager_kinds_items_delete">
-                                    Xóa
-                                </div>
-                            </li>
-                            <li>
-                                Hài hước
-                                <div className="manager_kinds_items_delete">
-                                    Xóa
-                                </div>
-                            </li>
-                            <li>
-                                Buồn
-                                <div className="manager_kinds_items_delete">
-                                    Xóa
-                                </div>
-                            </li>
-                            <li>
-                                Buồn
-                                <div className="manager_kinds_items_delete">
-                                    Xóa
-                                </div>
-                            </li>
-                            <li>
-                                Buồn
-                                <div className="manager_kinds_items_delete">
-                                    Xóa
-                                </div>
-                            </li>
-                            <li>
-                                Buồn
-                                <div className="manager_kinds_items_delete">
-                                    Xóa
-                                </div>
-                            </li>
-                            <li>
-                                Buồn
-                                <div className="manager_kinds_items_delete">
-                                    Xóa
-                                </div>
-                            </li>
-                            <li>
-                                Buồn
-                                <div className="manager_kinds_items_delete">
-                                    Xóa
-                                </div>
-                            </li>
-                            <li>
-                                Buồn
-                                <div className="manager_kinds_items_delete">
-                                    Xóa
-                                </div>
-                            </li>
-                            <li>
-                                Buồn
-                                <div className="manager_kinds_items_delete">
-                                    Xóa
-                                </div>
-                            </li>
+                            {countries.map((item) => (
+                                <li key={item?._id}>
+                                    {item?.name}
+                                    <div
+                                        onClick={() =>
+                                            handleDelete(
+                                                `/api/country/delete/${item?._id}`,
+                                                item?._id,
+                                                countries,
+                                                setCountries
+                                            )
+                                        }
+                                        className="manager_kinds_items_delete"
+                                    >
+                                        Xóa
+                                    </div>
+                                </li>
+                            ))}
                         </ul>
                     </div>
                 </div>

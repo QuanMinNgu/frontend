@@ -318,3 +318,15 @@
     height: 100%;
     object-fit: cover;
 }
+.create_country{
+    display: flex;
+    justify-content: center;
+    margin:3rem 0;
+}
+.create_country > select{
+    width: 20rem;
+    height: 4rem;
+    outline: none;
+    border-radius: 2rem;
+    padding:0 0.5rem;
+}
