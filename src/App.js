@@ -1,10 +1,15 @@
 import "./App.css";
 import "./style.css";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+    Await,
+    BrowserRouter as Router,
+    Route,
+    Routes,
+} from "react-router-dom";
 import { privateRouter, publicRouter } from "./routes/routes";
 import { toast, ToastContainer } from "react-toastify";
 import jwt_decode from "jwt-decode";
-import { createContext, useCallback, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import NotFound from "./notfound/NotFound";
 import Cookies from "js-cookie";
@@ -15,30 +20,30 @@ export const UserContext = createContext();
 function App() {
     const auth = useSelector((state) => state.auth);
 
+    const cache = useRef({});
+
     const dispatch = useDispatch();
 
-    const checkToken = useCallback(() => {
+    const checkToken = useCallback(async () => {
         const decoded = jwt_decode(auth.user?.accessToken);
         if (decoded.exp < Date.now() / 1000) {
-            const refreshToken = Cookies.get("token");
-            axios
-                .get("/api/auth/token/refresh", {
+            try {
+                const refreshToken = Cookies.get("token");
+                const data = await axios.get("/api/auth/token/refresh", {
                     headers: {
                         token: `Bearer ${refreshToken}`,
                     },
-                })
-                .then((res) => {
-                    console.log("Here ok here");
-                    dispatch(isLogin(res?.data));
-                    const decoded = jwt_decode(res?.data?.accessToken);
-                    Cookies.remove("token");
-                    Cookies.set("token", decoded?.refreshToken, {
-                        expires: 30,
-                    });
-                })
-                .catch((err) => {
-                    toast.error(err?.response?.data?.msg);
                 });
+                dispatch(isLogin(data?.data));
+                const decoded = jwt_decode(data?.data?.accessToken);
+                Cookies.remove("token");
+                Cookies.set("token", decoded?.refreshToken, {
+                    expires: 30,
+                });
+                return data?.data?.accessToken;
+            } catch (err) {
+                toast.error(err?.response?.data?.msg);
+            }
         }
     });
 
@@ -58,7 +63,7 @@ function App() {
     }, []);
 
     return (
-        <UserContext.Provider value={{ store, setStore, checkToken }}>
+        <UserContext.Provider value={{ store, setStore, checkToken, cache }}>
             <Router>
                 <div className="App">
                     <Routes>

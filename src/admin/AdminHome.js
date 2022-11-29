@@ -1,8 +1,9 @@
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { UserContext } from "~/App";
 import AdminCard from "./AdminCard";
 import "./style.css";
 const AdminHome = () => {
@@ -12,15 +13,23 @@ const AdminHome = () => {
     const [kinds, setKinds] = useState([]);
     const [countries, setCountries] = useState([]);
 
+    const { cache } = useContext(UserContext);
+
     const [movie, setMovie] = useState([]);
 
     useEffect(() => {
         let here = true;
+        const url = "/api/kind";
+        if (cache.current[url]) {
+            setKinds(cache.current[url]);
+            return;
+        }
         axios
-            .get("/api/kind")
+            .get(url)
             .then((res) => {
                 if (here) {
                     setKinds(res?.data?.kinds);
+                    cache.current[url] = res?.data?.kinds;
                 }
             })
             .catch((err) => {
@@ -32,28 +41,42 @@ const AdminHome = () => {
     }, []);
     useEffect(() => {
         let here = true;
+        const url = "/api/country";
+        if (cache.current[url]) {
+            setCountries(cache.current[url]);
+            return;
+        }
+        axios
+            .get(url)
+            .then((res) => {
+                if (here) {
+                    setCountries(res?.data?.countries);
+                    cache.current[url] = res?.data?.countries;
+                }
+            })
+            .catch((err) => {
+                toast.error(err?.response?.data?.msg);
+            });
+        return () => {
+            here = false;
+        };
+    }, []);
+    useEffect(() => {
+        let here = true;
+        const url = "/api/movie";
+        if (cache.current[url]) {
+            setMovie(cache.current[url]);
+            return;
+        }
         axios
             .get("/api/movie")
             .then((res) => {
                 if (here) {
                     setMovie(res?.data?.Products);
-                }
-            })
-            .catch((err) => {
-                toast.error(err?.response?.data?.msg);
-            });
-        return () => {
-            here = false;
-        };
-    }, []);
-
-    useEffect(() => {
-        let here = true;
-        axios
-            .get("/api/country")
-            .then((res) => {
-                if (here) {
-                    setCountries(res?.data?.countries);
+                    cache.current[url] = res?.data?.Products;
+                    res?.data?.Products?.forEach((item) => {
+                        cache.current[`/api/movie/${item?.slug}`] = item;
+                    });
                 }
             })
             .catch((err) => {

@@ -1,4 +1,5 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 import React, {
     useCallback,
     useContext,
@@ -7,10 +8,13 @@ import React, {
     useState,
 } from "react";
 import { useDropzone } from "react-dropzone";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "~/App";
+import jwt_decode from "jwt-decode";
 import "./style.css";
+import { isLogin } from "~/redux/slice/auth";
 const Update = () => {
     const [image, setImage] = useState("");
     const imageRef = useRef("");
@@ -21,22 +25,75 @@ const Update = () => {
     const contentRef = useRef(null);
     const countryRef = useRef(null);
 
+    const dispatch = useDispatch();
+
     const auth = useSelector((state) => state.auth);
 
-    const { checkToken } = useContext(UserContext);
+    const { checkToken, cache } = useContext(UserContext);
 
     const [kinds, setKinds] = useState([]);
     const [countries, setCountries] = useState([]);
 
     const [creKinds, setCreKinds] = useState([]);
 
+    const [truyen, setTruyen] = useState({});
+
+    const { slug } = useParams();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [slug]);
+
     useEffect(() => {
         let here = true;
+        const url = `/api/movie/${slug}`;
+        if (cache.current[url]) {
+            setTruyen(cache.current[url]);
+            return;
+        }
         axios
-            .get("/api/kind")
+            .get(url)
+            .then((res) => {
+                if (here) {
+                    setTruyen(res?.data?.product);
+                    cache.current[url] = res?.data?.product;
+                }
+            })
+            .catch((err) => {
+                toast.error(err?.response?.data?.msg);
+            });
+
+        return () => {
+            here = false;
+        };
+    }, [slug]);
+
+    useEffect(() => {
+        if (truyen) {
+            const newA = [];
+            truyen.kinds?.forEach((item) => {
+                if (document.getElementById(item?._id)) {
+                    document.getElementById(item?._id).checked = true;
+                }
+                newA.push(item?._id);
+            });
+            setCreKinds(newA);
+        }
+    }, [truyen]);
+
+    useEffect(() => {
+        let here = true;
+        const url = "/api/kind";
+        if (cache.current[url]) {
+            setKinds(cache.current[url]);
+            return;
+        }
+        axios
+            .get(url)
             .then((res) => {
                 if (here) {
                     setKinds(res?.data?.kinds);
+                    cache.current[url] = res?.data?.kinds;
                 }
             })
             .catch((err) => {
@@ -48,11 +105,17 @@ const Update = () => {
     }, []);
     useEffect(() => {
         let here = true;
+        const url = "/api/country";
+        if (cache.current[url]) {
+            setCountries(cache.current[url]);
+            return;
+        }
         axios
-            .get("/api/country")
+            .get(url)
             .then((res) => {
                 if (here) {
                     setCountries(res?.data?.countries);
+                    cache.current[url] = res?.data?.countries;
                 }
             })
             .catch((err) => {
@@ -65,7 +128,10 @@ const Update = () => {
 
     const handleChangeKinds = (e) => {
         if (e.target.checked) {
-            setCreKinds([...creKinds, e.id]);
+            const check = creKinds.some((item) => item === e?.id);
+            if (!check) {
+                setCreKinds([...creKinds, e.id]);
+            }
         } else {
             const newArr = creKinds.filter((item) => item !== e.id);
             setCreKinds(newArr);
@@ -81,7 +147,6 @@ const Update = () => {
             content: contentRef.current?.value,
             country: countryRef.current?.value,
             kinds: creKinds,
-            image: imageRef.current,
         };
 
         const excludesFields = [
@@ -91,7 +156,6 @@ const Update = () => {
             "status",
             "content",
             "country",
-            "image",
         ];
         let check = false;
         excludesFields.forEach((item) => {
@@ -105,30 +169,32 @@ const Update = () => {
         if (check) {
             return toast.error("Vui lòng điền hết thông tin.");
         }
-        const formData = new FormData();
-        formData.append("file", imageRef.current);
-        formData.append("upload_preset", "sttruyenxyz");
-        try {
-            const res = await axios.post(
-                "https://api.cloudinary.com/v1_1/sttruyen/image/upload",
-                formData
-            );
-            const newUrl = "https:" + res.data.url.split(":")[1];
-            movie.image = newUrl;
-        } catch (err) {
-            return;
+        if (imageRef.current) {
+            const formData = new FormData();
+            formData.append("file", imageRef.current);
+            formData.append("upload_preset", "sttruyenxyz");
+            try {
+                const res = await axios.post(
+                    "https://api.cloudinary.com/v1_1/sttruyen/image/upload",
+                    formData
+                );
+                const newUrl = "https:" + res.data.url.split(":")[1];
+                movie.image = newUrl;
+            } catch (err) {
+                return;
+            }
         }
 
-        await checkToken();
+        const da = await checkToken();
         try {
             const data = await axios.post(
-                "/api/movie/create",
+                `/api/movie/update/${slug}`,
                 {
                     ...movie,
                 },
                 {
                     headers: {
-                        token: `Bearer ${auth.user?.accessToken}`,
+                        token: `Bearer ${da}`,
                     },
                 }
             );
@@ -136,13 +202,6 @@ const Update = () => {
         } catch (err) {
             toast.error(err?.response?.data?.msg);
         }
-        titleRef.current.value = "";
-        seTitleRef.current.value = "";
-        authorRef.current.value = "";
-        statusRef.current.value = "";
-        contentRef.current.value = "";
-        imageRef.current = "";
-        setImage("");
     };
 
     const onDrop = useCallback((acceptedFiles) => {
@@ -161,7 +220,7 @@ const Update = () => {
             <div className="grid wideS">
                 <div className="create_wrap">
                     <div className="create_title">
-                        <h1>Tạo truyện mới</h1>
+                        <h1>Cập nhật truyện</h1>
                     </div>
                     <div className="create_image">
                         <div className="movie_drop_zone">
@@ -172,7 +231,7 @@ const Update = () => {
                                 <input {...getInputProps()} />
                                 <i className="fa-regular fa-image"></i>
                                 <div className="image_create_container">
-                                    <img src={image} />
+                                    <img src={image || truyen?.image} />
                                 </div>
                             </div>
                         </div>
@@ -184,6 +243,7 @@ const Update = () => {
                             ref={titleRef}
                             placeholder="Tên truyện"
                             type="text"
+                            defaultValue={truyen?.title}
                         />
                     </div>
                     <div className="create_form">
@@ -193,6 +253,7 @@ const Update = () => {
                             ref={seTitleRef}
                             placeholder="Tên truyện khác"
                             type="text"
+                            defaultValue={truyen?.seTitle}
                         />
                     </div>
                     <div className="create_form">
@@ -202,6 +263,7 @@ const Update = () => {
                             ref={authorRef}
                             placeholder="Tên tác giả"
                             type="text"
+                            defaultValue={truyen?.author}
                         />
                     </div>
                     <div className="create_form">
@@ -211,6 +273,7 @@ const Update = () => {
                             ref={statusRef}
                             placeholder="Tình trạng"
                             type="text"
+                            defaultValue={truyen?.status}
                         />
                     </div>
                     <div className="create_form">
@@ -221,6 +284,7 @@ const Update = () => {
                             style={{ minHeight: "15rem" }}
                             placeholder="Nội dung"
                             type="text"
+                            defaultValue={truyen?.content}
                         />
                     </div>
                     <div className="create_kinds">
@@ -245,18 +309,35 @@ const Update = () => {
                     </div>
                     <div className="create_country">
                         <select ref={countryRef}>
-                            {countries.map((item) => (
-                                <option
-                                    value={item?._id}
-                                    key={item?._id + "craete"}
-                                >
-                                    {item?.name}
-                                </option>
-                            ))}
+                            {countries.map((item) => {
+                                if (
+                                    item?._id?.toString() ===
+                                    truyen?.country?._id?.toString()
+                                ) {
+                                    return (
+                                        <option
+                                            selected="selected"
+                                            value={item?._id}
+                                            key={item?._id + "craete"}
+                                        >
+                                            {item?.name}
+                                        </option>
+                                    );
+                                } else {
+                                    return (
+                                        <option
+                                            value={item?._id}
+                                            key={item?._id + "craete"}
+                                        >
+                                            {item?.name}
+                                        </option>
+                                    );
+                                }
+                            })}
                         </select>
                     </div>
                     <div className="create_button">
-                        <button onClick={handleCreateMovie}>Tạo mới</button>
+                        <button onClick={handleCreateMovie}>Cật nhật</button>
                     </div>
                 </div>
             </div>

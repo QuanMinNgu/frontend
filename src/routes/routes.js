@@ -1,5 +1,6 @@
 import AdminHome from "~/admin/AdminHome";
 import Create from "~/admin/Create";
+import Update from "~/admin/Update";
 import ActiveAccount from "~/auth/ActiveAccount";
 import ForgotPassword from "~/auth/ForgotPassword";
 import Login from "~/auth/Login";
@@ -8,7 +9,6 @@ import CardDetail from "~/cardDetail/CardDetail";
 import DefaultLayout from "~/components/defaultLayout/DefaultLayout";
 import Home from "~/homepage/Home";
 import MovieWatch from "~/movieWatch/MovieWatch";
-import NotFound from "~/notfound/NotFound";
 
 export const publicRouter = [
     { element: Home, path: "/", exact: true, layout: DefaultLayout },
@@ -34,6 +34,12 @@ export const privateRouter = [
     {
         element: Create,
         path: "/admin/create",
+        exact: true,
+        layout: DefaultLayout,
+    },
+    {
+        element: Update,
+        path: "/admin/update/:slug",
         exact: true,
         layout: DefaultLayout,
     },

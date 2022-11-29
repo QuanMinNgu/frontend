@@ -1,6 +1,8 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./style.css";
 const AdminCard = ({ item }) => {
+    const navigate = useNavigate();
     return (
         <div className="adminCard_container">
             <div className="adminCard_image_container">
@@ -12,7 +14,14 @@ const AdminCard = ({ item }) => {
             <div className="adminCard_button_container">
                 <button title="Xóa">Xóa</button>
                 <button title="Cập nhật chương">Chapter</button>
-                <button title="Cập nhật">Update</button>
+                <button
+                    onClick={() => {
+                        navigate(`/admin/update/${item?.slug}`);
+                    }}
+                    title="Cập nhật"
+                >
+                    Update
+                </button>
             </div>
         </div>
     );

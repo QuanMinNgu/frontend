@@ -23,7 +23,7 @@ const Create = () => {
 
     const auth = useSelector((state) => state.auth);
 
-    const { checkToken } = useContext(UserContext);
+    const { checkToken, cache } = useContext(UserContext);
 
     const [kinds, setKinds] = useState([]);
     const [countries, setCountries] = useState([]);
@@ -32,11 +32,17 @@ const Create = () => {
 
     useEffect(() => {
         let here = true;
+        const url = "/api/kind";
+        if (cache.current[url]) {
+            setKinds(cache.current[url]);
+            return;
+        }
         axios
-            .get("/api/kind")
+            .get(url)
             .then((res) => {
                 if (here) {
                     setKinds(res?.data?.kinds);
+                    cache.current[url] = res?.data?.kinds;
                 }
             })
             .catch((err) => {
@@ -48,11 +54,17 @@ const Create = () => {
     }, []);
     useEffect(() => {
         let here = true;
+        const url = "/api/country";
+        if (cache.current[url]) {
+            setCountries(cache.current[url]);
+            return;
+        }
         axios
-            .get("/api/country")
+            .get(url)
             .then((res) => {
                 if (here) {
                     setCountries(res?.data?.countries);
+                    cache.current[url] = res?.data?.countries;
                 }
             })
             .catch((err) => {
@@ -119,7 +131,7 @@ const Create = () => {
             return;
         }
 
-        await checkToken();
+        const da = await checkToken();
         try {
             const data = await axios.post(
                 "/api/movie/create",
@@ -128,7 +140,7 @@ const Create = () => {
                 },
                 {
                     headers: {
-                        token: `Bearer ${auth.user?.accessToken}`,
+                        token: `Bearer ${da}`,
                     },
                 }
             );
