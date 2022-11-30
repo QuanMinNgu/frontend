@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AddImage from "./AddImage";
 import ChapterCard from "./ChapterCard";
 import "./style.css";
 const Chapter = () => {
-    const [update, setUpdate] = useState("");
+    const [update, setUpdate] = useState([]);
+    const [updateUrl, setUpdateUrl] = useState([]);
 
     return (
         <div className="chapter_container">
@@ -80,13 +81,26 @@ const Chapter = () => {
                         </div>
                     </div>
                     <div className="chapter_Card_container">
-                        <ChapterCard />
-                        <ChapterCard />
-                        <ChapterCard />
+                        {update?.map((item, index) => (
+                            <ChapterCard
+                                key={item + "img"}
+                                update={update}
+                                setUpdate={setUpdate}
+                                item={item}
+                                updateUrl={updateUrl}
+                                setUpdateUrl={setUpdateUrl}
+                                index={index}
+                            />
+                        ))}
                     </div>
                 </div>
             </div>
-            <AddImage />
+            <AddImage
+                update={update}
+                updateUrl={updateUrl}
+                setUpdate={setUpdate}
+                setUpdateUrl={setUpdateUrl}
+            />
         </div>
     );
 };

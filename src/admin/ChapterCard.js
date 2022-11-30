@@ -1,10 +1,20 @@
+import { isAllOf } from "@reduxjs/toolkit";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import "./style.css";
-const ChapterCard = () => {
+const ChapterCard = ({
+    update,
+    setUpdate,
+    item,
+    updateUrl,
+    setUpdateUrl,
+    index,
+}) => {
     const [imageH, setImageH] = useState("");
     const [imageT, setImageT] = useState("");
     const [imageU, setImageU] = useState("");
+
+    const scrolRef = useRef();
 
     const [imgPo, setimgPo] = useState(null);
 
@@ -64,8 +74,55 @@ const ChapterCard = () => {
         }
     }, [imgPo]);
 
+    const handleCreateImage = () => {
+        if (imgPo === "Update") {
+            update.splice(index, 1, imageU);
+            updateUrl.splice(index, 1, imgURef.current);
+            setUpdate([...update]);
+            item = imageU;
+            setUpdateUrl([...updateUrl]);
+            imgURef.current = "";
+            setImageU("");
+            setimgPo(null);
+            if (scrolRef.current) {
+                scrolRef.current.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                });
+            }
+        } else if (imgPo === true) {
+            update.splice(index, 0, imageH);
+            updateUrl.splice(index, 0, imgHRef.current);
+            setUpdate([...update]);
+            setUpdateUrl([...updateUrl]);
+            imgHRef.current = "";
+            setImageH("");
+            setimgPo(null);
+            if (scrolRef.current) {
+                scrolRef.current.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                });
+            }
+        } else if (imgPo === false) {
+            update.splice(index + 1, 0, imageT);
+            updateUrl.splice(index + 1, 0, imgTRef.current);
+            setUpdate([...update]);
+            setUpdateUrl([...updateUrl]);
+            imgTRef.current = "";
+            setImageT("");
+            setimgPo(null);
+            if (scrolRef.current) {
+                scrolRef.current.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                });
+            }
+        }
+    };
+
     return (
-        <div className="chapterCard_wrap">
+        <div ref={scrolRef} className="chapterCard_wrap">
             {imgPo !== null && (
                 <div className="chapter_card_add" {...getRootProps()}>
                     <input {...getInputProps()} />
@@ -86,19 +143,20 @@ const ChapterCard = () => {
                 </div>
             )}
             <div className="chapter_image_container_detail">
-                <img src="https://res.cloudinary.com/sttruyen/image/upload/v1669434457/Sttruyen/8_aljxfh.png" />
+                <img src={item} />
                 <div className="chapterCard_navbar_container">
                     <div className="chapterCard_navbar_items">
                         {(imgPo === true ||
                             imgPo === false ||
                             imgPo === "Update") && (
                             <button
-                                title="Nhấn vào đây khi đã có ảnh trước và sau"
+                                title="Nhấn vào đây khi đã có ảnh trước hoặc sau hoặc cập nhật"
                                 style={{
                                     backgroundColor: "#56CCF2",
                                     color: "white",
                                     border: "0.05rem solid rgba(0,0,0,0.5)",
                                 }}
+                                onClick={handleCreateImage}
                             >
                                 {imgPo === true && "Chấp nhận ảnh trước"}
                                 {imgPo === false && "Chấp nhận ảnh sau"}

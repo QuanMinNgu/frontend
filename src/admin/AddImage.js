@@ -1,13 +1,15 @@
 import React, { useCallback, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import "./style.css";
-const AddImage = () => {
+const AddImage = ({ update, setUpdate, updateUrl, setUpdateUrl }) => {
     const [image, setImage] = useState("");
     const imgRef = useRef("");
 
     const handleCreateImage = () => {
         imgRef.current = "";
         setImage("");
+        setUpdate([...update, image]);
+        setUpdateUrl([...updateUrl], imgRef.current);
     };
 
     const onDrop = useCallback((acceptedFiles) => {
