@@ -6,7 +6,6 @@ const ScrollTop = () => {
     const currentPoRef = useRef(0);
     useEffect(() => {
         window.onscroll = () => {
-            console.log(window.pageYOffset);
             if (window.pageYOffset === 0) {
                 setCheckUp(true);
             } else {

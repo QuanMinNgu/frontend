@@ -1,4 +1,5 @@
 import AdminHome from "~/admin/AdminHome";
+import Chapter from "~/admin/Chapter";
 import Create from "~/admin/Create";
 import Update from "~/admin/Update";
 import ActiveAccount from "~/auth/ActiveAccount";
@@ -40,6 +41,12 @@ export const privateRouter = [
     {
         element: Update,
         path: "/admin/update/:slug",
+        exact: true,
+        layout: DefaultLayout,
+    },
+    {
+        element: Chapter,
+        path: "/admin/chapter/:slug",
         exact: true,
         layout: DefaultLayout,
     },

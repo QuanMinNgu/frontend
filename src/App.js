@@ -43,8 +43,10 @@ function App() {
                 return data?.data?.accessToken;
             } catch (err) {
                 toast.error(err?.response?.data?.msg);
+                return "";
             }
         }
+        return "";
     });
 
     const [store, setStore] = useState({ rule: "user" });

@@ -63,7 +63,7 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    min-height: 40rem;
+    min-height: 5rem;
     position: relative;
 }
 .movie_watch_image_items > img{

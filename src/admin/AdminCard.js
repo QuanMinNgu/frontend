@@ -13,7 +13,14 @@ const AdminCard = ({ item }) => {
             </div>
             <div className="adminCard_button_container">
                 <button title="Xóa">Xóa</button>
-                <button title="Cập nhật chương">Chapter</button>
+                <button
+                    onClick={() => {
+                        navigate(`/admin/chapter/${item?.slug}`);
+                    }}
+                    title="Cập nhật chương"
+                >
+                    Chapter
+                </button>
                 <button
                     onClick={() => {
                         navigate(`/admin/update/${item?.slug}`);

@@ -185,7 +185,7 @@ const Update = () => {
             }
         }
 
-        const da = await checkToken();
+        const da = (await checkToken()) || auth.user?.accessToken;
         try {
             const data = await axios.post(
                 `/api/movie/update/${slug}`,
