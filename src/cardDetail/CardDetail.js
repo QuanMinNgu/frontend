@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "~/App";
@@ -7,13 +7,28 @@ import CommentForm from "~/comment/CommentForm";
 import NotFound from "~/notfound/NotFound";
 import "./style.css";
 const CardDetail = () => {
-    const [currentStar, setCurrentStar] = useState(5);
+    const [currentStar, setCurrentStar] = useState(null);
+
+    const [hoverStun, setHoverTurn] = useState(null);
+
     const { slug } = useParams();
 
     const allStar = Array(5).fill(0);
     const [hoverStar, setHoverStar] = useState(null);
 
     const [truyen, setTruyen] = useState("");
+
+    const ratingRef = useRef(0);
+
+    const clipPath = {
+        clipPath: `inset(0 ${100 - ratingRef.current * 100}% 0 0)`,
+    };
+
+    useEffect(() => {
+        if (truyen) {
+            ratingRef.current = truyen?.stars / (truyen?.reviewers * 5);
+        }
+    }, [truyen]);
 
     const [check, setCheck] = useState(false);
 
@@ -167,10 +182,72 @@ const CardDetail = () => {
                                             {truyen?.watchs}
                                         </li>
                                         <li className="star_rating">
-                                            <div className="card_Detail_infor_rating">
-                                                {allStar.map((_, index) => {
-                                                    return hoverStar ? (
-                                                        hoverStar > index ? (
+                                            {currentStar ||
+                                            hoverStar ||
+                                            hoverStun ? (
+                                                <div className="card_Detail_infor_rating">
+                                                    {allStar.map((_, index) => {
+                                                        return hoverStar ? (
+                                                            hoverStar >
+                                                            index ? (
+                                                                <i
+                                                                    key={
+                                                                        index +
+                                                                        "star"
+                                                                    }
+                                                                    onClick={() => {
+                                                                        setCurrentStar(
+                                                                            index +
+                                                                                1
+                                                                        );
+                                                                    }}
+                                                                    onMouseOver={() => {
+                                                                        setHoverStar(
+                                                                            index +
+                                                                                1
+                                                                        );
+                                                                    }}
+                                                                    onMouseLeave={() => {
+                                                                        setHoverStar(
+                                                                            null
+                                                                        );
+                                                                    }}
+                                                                    style={{
+                                                                        cursor: "pointer",
+                                                                    }}
+                                                                    className="fa-solid fa-star"
+                                                                ></i>
+                                                            ) : (
+                                                                <i
+                                                                    key={
+                                                                        index +
+                                                                        "star"
+                                                                    }
+                                                                    onClick={() => {
+                                                                        setCurrentStar(
+                                                                            index +
+                                                                                1
+                                                                        );
+                                                                    }}
+                                                                    onMouseOver={() => {
+                                                                        setHoverStar(
+                                                                            index +
+                                                                                1
+                                                                        );
+                                                                    }}
+                                                                    onMouseLeave={() => {
+                                                                        setHoverStar(
+                                                                            null
+                                                                        );
+                                                                    }}
+                                                                    style={{
+                                                                        cursor: "pointer",
+                                                                    }}
+                                                                    className="fa-regular fa-star"
+                                                                ></i>
+                                                            )
+                                                        ) : currentStar >
+                                                          index ? (
                                                             <i
                                                                 key={
                                                                     index +
@@ -226,56 +303,36 @@ const CardDetail = () => {
                                                                 }}
                                                                 className="fa-regular fa-star"
                                                             ></i>
-                                                        )
-                                                    ) : currentStar > index ? (
-                                                        <i
-                                                            key={index + "star"}
-                                                            onClick={() => {
-                                                                setCurrentStar(
-                                                                    index + 1
-                                                                );
-                                                            }}
-                                                            onMouseOver={() => {
-                                                                setHoverStar(
-                                                                    index + 1
-                                                                );
-                                                            }}
-                                                            onMouseLeave={() => {
-                                                                setHoverStar(
-                                                                    null
-                                                                );
-                                                            }}
-                                                            style={{
-                                                                cursor: "pointer",
-                                                            }}
-                                                            className="fa-solid fa-star"
-                                                        ></i>
-                                                    ) : (
-                                                        <i
-                                                            key={index + "star"}
-                                                            onClick={() => {
-                                                                setCurrentStar(
-                                                                    index + 1
-                                                                );
-                                                            }}
-                                                            onMouseOver={() => {
-                                                                setHoverStar(
-                                                                    index + 1
-                                                                );
-                                                            }}
-                                                            onMouseLeave={() => {
-                                                                setHoverStar(
-                                                                    null
-                                                                );
-                                                            }}
-                                                            style={{
-                                                                cursor: "pointer",
-                                                            }}
-                                                            className="fa-regular fa-star"
-                                                        ></i>
-                                                    );
-                                                })}
-                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            ) : (
+                                                <div
+                                                    onMouseOver={() => {
+                                                        setHoverTurn(1);
+                                                    }}
+                                                    onMouseLeave={() => {
+                                                        setHoverTurn(null);
+                                                    }}
+                                                    className="card_Detail_infor_rating"
+                                                >
+                                                    <i className="fa-regular fa-star"></i>
+                                                    <i className="fa-regular fa-star"></i>
+                                                    <i className="fa-regular fa-star"></i>
+                                                    <i className="fa-regular fa-star"></i>
+                                                    <i className="fa-regular fa-star"></i>
+                                                    <div
+                                                        style={clipPath}
+                                                        className="card_image_infor_rating-lights"
+                                                    >
+                                                        <i className="fa-solid fa-star"></i>
+                                                        <i className="fa-solid fa-star"></i>
+                                                        <i className="fa-solid fa-star"></i>
+                                                        <i className="fa-solid fa-star"></i>
+                                                        <i className="fa-solid fa-star"></i>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </li>
                                     </ul>
                                 </div>

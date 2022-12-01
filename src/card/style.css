@@ -49,7 +49,6 @@
     top:0;
     left:0;
     width: auto;
-    clip-path: inset(0 0% 0 0);
 }
 .card_infor{
     margin-top: 0.5rem;

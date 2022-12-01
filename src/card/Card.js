@@ -1,7 +1,18 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import "./style.css";
 const Card = ({ item }) => {
+    const ratingRef = useRef(0);
+
+    const clipPath = {
+        clipPath: `inset(0 ${100 - ratingRef.current * 100}% 0 0)`,
+    };
+
+    useEffect(() => {
+        if (item) {
+            ratingRef.current = item?.stars / (item?.reviewers * 5);
+        }
+    }, [item]);
     return (
         <div className="card_container">
             <Link to={`/${item?.slug}`}>
@@ -23,7 +34,10 @@ const Card = ({ item }) => {
                             <i className="fa-regular fa-star"></i>
                             <i className="fa-regular fa-star"></i>
                             <i className="fa-regular fa-star"></i>
-                            <div className="card_image_infor_rating-lights">
+                            <div
+                                style={clipPath}
+                                className="card_image_infor_rating-lights"
+                            >
                                 <i className="fa-solid fa-star"></i>
                                 <i className="fa-solid fa-star"></i>
                                 <i className="fa-solid fa-star"></i>

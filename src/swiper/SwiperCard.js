@@ -1,8 +1,19 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import "./style.css";
 
 const SwiperCard = ({ item }) => {
+    const ratingRef = useRef(0);
+
+    const clipPath = {
+        clipPath: `inset(0 ${100 - ratingRef.current * 100}% 0 0)`,
+    };
+
+    useEffect(() => {
+        if (item) {
+            ratingRef.current = item?.stars / (item?.reviewers * 5);
+        }
+    }, [item]);
     return (
         <div className="swiper_card_container">
             <Link className="swiper_card_wrap" to={`/${item?.slug}`}>
@@ -23,7 +34,10 @@ const SwiperCard = ({ item }) => {
                             <i className="fa-regular fa-star"></i>
                             <i className="fa-regular fa-star"></i>
                             <i className="fa-regular fa-star"></i>
-                            <div className="swiper_card-infor_rating">
+                            <div
+                                style={clipPath}
+                                className="swiper_card-infor_rating"
+                            >
                                 <i className="fa-solid fa-star"></i>
                                 <i className="fa-solid fa-star"></i>
                                 <i className="fa-solid fa-star"></i>
