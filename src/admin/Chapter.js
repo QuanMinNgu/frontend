@@ -22,6 +22,8 @@ const Chapter = () => {
 
     const [chapterCurrent, setChapterCurrent] = useState(null);
 
+    const [typeChange, setTypeChange] = useState(null);
+
     const handleCreateImage = async () => {
         if (update.length === 0) {
             return toast.error("Vui lòng thêm ảnh.");
@@ -30,8 +32,8 @@ const Chapter = () => {
     };
 
     const upLoadImage = async () => {
+        const da = (await checkToken()) || auth.user?.accessToken;
         if (chapterCurrent === null) {
-            const da = (await checkToken()) || auth.user?.accessToken;
             try {
                 const data = await axios.post(
                     `/api/chapter/create/${slug}`,
@@ -51,27 +53,49 @@ const Chapter = () => {
                 toast.error(err?.response?.data?.msg);
             }
         } else {
-            const da = (await checkToken()) || auth.user?.accessToken;
-            try {
-                const data = await axios.post(
-                    `/api/chapter/update/${
-                        truyen?.chapters[chapterCurrent - 1]?._id
-                    }`,
-                    {
-                        images: updateUrl,
-                    },
-                    {
-                        headers: {
-                            token: `Bearer ${da}`,
+            if (typeChange === null) {
+                try {
+                    const data = await axios.post(
+                        `/api/chapter/update/${
+                            truyen?.chapters[chapterCurrent - 1]?._id
+                        }`,
+                        {
+                            images: updateUrl,
                         },
-                    }
-                );
-                toast.success(data?.data?.msg);
-                setUpdate([]);
-                setUpdateUrl([]);
-                setChapterCurrent(null);
-            } catch (err) {
-                toast.error(err?.response?.data?.msg);
+                        {
+                            headers: {
+                                token: `Bearer ${da}`,
+                            },
+                        }
+                    );
+                    toast.success(data?.data?.msg);
+                    setUpdate([]);
+                    setUpdateUrl([]);
+                    setChapterCurrent(null);
+                } catch (err) {
+                    toast.error(err?.response?.data?.msg);
+                }
+            } else {
+                try {
+                    const data = await axios.post(
+                        `/api/chapter/createindex/${slug}`,
+                        {
+                            images: updateUrl,
+                            type: typeChange,
+                            index: chapterCurrent - 1,
+                        },
+                        {
+                            headers: {
+                                token: `Bearer ${da}`,
+                            },
+                        }
+                    );
+                    toast.success(data?.data?.msg);
+                    setUpdate([]);
+                    setUpdateUrl([]);
+                } catch (err) {
+                    toast.error(err?.response?.data?.msg);
+                }
             }
         }
     };
@@ -143,11 +167,60 @@ const Chapter = () => {
                                     <span>Chương {index + 1}</span>
                                     <div className="chapter_button">
                                         <button
+                                            style={
+                                                chapterCurrent === index + 1 &&
+                                                typeChange === "Head"
+                                                    ? {
+                                                          backgroundColor:
+                                                              "blue",
+                                                          color: "white",
+                                                      }
+                                                    : {}
+                                            }
+                                            onClick={() => {
+                                                if (typeChange === null) {
+                                                    setTypeChange("Head");
+                                                    setChapterCurrent(
+                                                        index + 1
+                                                    );
+                                                    setUpdate([]);
+                                                    setUpdateUrl([]);
+                                                } else {
+                                                    if (typeChange !== "Tail") {
+                                                        setTypeChange(null);
+                                                        setChapterCurrent(null);
+                                                    } else {
+                                                        setTypeChange("Head");
+                                                        setChapterCurrent(
+                                                            index + 1
+                                                        );
+                                                        setUpdate([]);
+                                                        setUpdateUrl([]);
+                                                    }
+                                                }
+                                            }}
+                                        >
+                                            {chapterCurrent === index + 1 &&
+                                            typeChange === "Head"
+                                                ? "Đang thêm trước"
+                                                : "Thêm trước"}
+                                        </button>
+                                        <button
                                             onClick={() => handleDelete(item)}
                                         >
                                             Xóa
                                         </button>
                                         <button
+                                            style={
+                                                chapterCurrent === index + 1 &&
+                                                typeChange === null
+                                                    ? {
+                                                          backgroundColor:
+                                                              "blue",
+                                                          color: "white",
+                                                      }
+                                                    : {}
+                                            }
                                             onClick={() => {
                                                 if (
                                                     chapterCurrent !==
@@ -163,16 +236,67 @@ const Chapter = () => {
                                                     setChapterCurrent(
                                                         index + 1
                                                     );
+                                                    setTypeChange(null);
                                                 } else {
-                                                    setUpdate([]);
-                                                    setUpdateUrl([]);
-                                                    setChapterCurrent(null);
+                                                    if (typeChange === null) {
+                                                        setUpdate([]);
+                                                        setUpdateUrl([]);
+                                                        setChapterCurrent(null);
+                                                    } else {
+                                                        setUpdate([
+                                                            ...item?.images,
+                                                        ]);
+                                                        setUpdateUrl([
+                                                            ...item?.images,
+                                                        ]);
+                                                        setTypeChange(null);
+                                                    }
                                                 }
                                             }}
                                         >
-                                            {chapterCurrent === index + 1
+                                            {typeChange === null &&
+                                            chapterCurrent === index + 1
                                                 ? "Đang Cập nhật"
                                                 : "Cập nhật"}
+                                        </button>
+                                        <button
+                                            style={
+                                                chapterCurrent === index + 1 &&
+                                                typeChange === "Tail"
+                                                    ? {
+                                                          backgroundColor:
+                                                              "blue",
+                                                          color: "white",
+                                                      }
+                                                    : {}
+                                            }
+                                            onClick={() => {
+                                                if (typeChange === null) {
+                                                    setTypeChange("Tail");
+                                                    setChapterCurrent(
+                                                        index + 1
+                                                    );
+                                                    setUpdate([]);
+                                                    setUpdateUrl([]);
+                                                } else {
+                                                    if (typeChange !== "Head") {
+                                                        setTypeChange(null);
+                                                        setChapterCurrent(null);
+                                                    } else {
+                                                        setTypeChange("Tail");
+                                                        setChapterCurrent(
+                                                            index + 1
+                                                        );
+                                                        setUpdate([]);
+                                                        setUpdateUrl([]);
+                                                    }
+                                                }
+                                            }}
+                                        >
+                                            {chapterCurrent === index + 1 &&
+                                            typeChange === "Tail"
+                                                ? "Đang thêm sau"
+                                                : "Thêm sau"}
                                         </button>
                                     </div>
                                 </div>

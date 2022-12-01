@@ -1,11 +1,15 @@
 import axios from "axios";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
+import { isFailing, isLoading, isSuccess } from "~/redux/slice/auth";
 import "./style.css";
 const AddImage = ({ update, setUpdate, updateUrl, setUpdateUrl }) => {
     const [image, setImage] = useState("");
     const imgRef = useRef("");
+
+    const dispatch = useDispatch();
 
     const handleCreateImage = () => {
         setUpdate([...update, image]);
@@ -27,6 +31,7 @@ const AddImage = ({ update, setUpdate, updateUrl, setUpdateUrl }) => {
     });
 
     const handleAddImag = async () => {
+        dispatch(isLoading());
         const formData = new FormData();
         formData.append("file", imgRef.current);
         formData.append("upload_preset", "stphim");
@@ -40,9 +45,10 @@ const AddImage = ({ update, setUpdate, updateUrl, setUpdateUrl }) => {
             setUpdateUrl([...updateUrl, newUrl]);
             setImage("");
             imgRef.current = "";
-            toast.success("Ok rùi");
+            dispatch(isSuccess());
         } catch (err) {
             console.log(err);
+            dispatch(isFailing());
         }
     };
 

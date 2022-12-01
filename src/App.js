@@ -15,6 +15,7 @@ import NotFound from "./notfound/NotFound";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { isLogin } from "./redux/slice/auth";
+import Loading from "./loading/Loading";
 export const UserContext = createContext();
 
 function App() {
@@ -153,6 +154,7 @@ function App() {
                             })}
                         <Route path="*" element={<NotFound />} />
                     </Routes>
+                    {auth.loading && <Loading />}
                 </div>
                 <div className="app-pc">
                     <ToastContainer

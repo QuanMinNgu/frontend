@@ -2,7 +2,9 @@ import { isAllOf } from "@reduxjs/toolkit";
 import axios from "axios";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
+import { isFailing, isLoading, isSuccess } from "~/redux/slice/auth";
 import "./style.css";
 const ChapterCard = ({
     update,
@@ -19,6 +21,8 @@ const ChapterCard = ({
     const scrolRef = useRef();
 
     const [imgPo, setimgPo] = useState(null);
+
+    const dispatch = useDispatch();
 
     const imgHRef = useRef("");
     const imgTRef = useRef("");
@@ -77,6 +81,7 @@ const ChapterCard = ({
     }, [imgPo]);
 
     const handleCreateImage = async () => {
+        dispatch(isLoading());
         if (imgPo === "Update") {
             const formData = new FormData();
             formData.append("file", imgURef.current);
@@ -95,10 +100,10 @@ const ChapterCard = ({
                 imgURef.current = "";
                 setImageU("");
                 setimgPo(null);
-                toast.success("Ok rùi");
-                console.log(updateUrl);
+                dispatch(isSuccess());
             } catch (err) {
                 console.log(err);
+                dispatch(isFailing());
             }
             if (scrolRef.current) {
                 scrolRef.current.scrollIntoView({
@@ -129,9 +134,10 @@ const ChapterCard = ({
                         block: "start",
                     });
                 }
-                toast.success("ok rùi");
+                dispatch(isSuccess());
             } catch (err) {
                 console.log(err);
+                dispatch(isFailing());
             }
         } else if (imgPo === false) {
             const formData = new FormData();
@@ -156,9 +162,10 @@ const ChapterCard = ({
                         block: "start",
                     });
                 }
-                toast.success("ok rùi");
+                dispatch(isSuccess());
             } catch (err) {
                 console.log(err);
+                dispatch(isFailing());
             }
         }
     };
