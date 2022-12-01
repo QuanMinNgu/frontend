@@ -20,57 +20,13 @@ const Chapter = () => {
 
     const btnRef = useRef(null);
 
-    const [imgArr, setImgArr] = useState([]);
-
     const [chapterCurrent, setChapterCurrent] = useState(null);
 
     const handleCreateImage = async () => {
         if (update.length === 0) {
             return toast.error("Vui lòng thêm ảnh.");
         }
-        if (chapterCurrent === null) {
-            updateUrl.forEach(async (item) => {
-                const formData = new FormData();
-                formData.append("file", item);
-                formData.append("upload_preset", "stphim");
-                try {
-                    const res = await axios.post(
-                        "https://api.cloudinary.com/v1_1/sttruyen/image/upload",
-                        formData
-                    );
-                    const newUrl = "https:" + res.data.url.split(":")[1];
-                    imgArr.push(newUrl);
-                    setImgArr([...imgArr]);
-                } catch (err) {
-                    console.log(err);
-                }
-            });
-        } else {
-            updateUrl.forEach(async (item, index) => {
-                if (
-                    index >=
-                    truyen?.chapters[chapterCurrent - 1]?.images?.length
-                ) {
-                    const formData = new FormData();
-                    formData.append("file", item);
-                    formData.append("upload_preset", "stphim");
-                    try {
-                        const res = await axios.post(
-                            "https://api.cloudinary.com/v1_1/sttruyen/image/upload",
-                            formData
-                        );
-                        const newUrl = "https:" + res.data.url.split(":")[1];
-                        imgArr.push(newUrl);
-                        setImgArr([...imgArr]);
-                    } catch (err) {
-                        console.log(err);
-                    }
-                } else {
-                    imgArr.push(item);
-                    setImgArr([...imgArr]);
-                }
-            });
-        }
+        upLoadImage();
     };
 
     const upLoadImage = async () => {
@@ -80,7 +36,7 @@ const Chapter = () => {
                 const data = await axios.post(
                     `/api/chapter/create/${slug}`,
                     {
-                        images: imgArr,
+                        images: updateUrl,
                     },
                     {
                         headers: {
@@ -91,7 +47,6 @@ const Chapter = () => {
                 toast.success(data?.data?.msg);
                 setUpdate([]);
                 setUpdateUrl([]);
-                setImgArr([]);
             } catch (err) {
                 toast.error(err?.response?.data?.msg);
             }
@@ -103,7 +58,7 @@ const Chapter = () => {
                         truyen?.chapters[chapterCurrent - 1]?._id
                     }`,
                     {
-                        images: imgArr,
+                        images: updateUrl,
                     },
                     {
                         headers: {
@@ -114,21 +69,12 @@ const Chapter = () => {
                 toast.success(data?.data?.msg);
                 setUpdate([]);
                 setUpdateUrl([]);
-                setImgArr([]);
                 setChapterCurrent(null);
             } catch (err) {
                 toast.error(err?.response?.data?.msg);
             }
         }
     };
-
-    useEffect(() => {
-        if (imgArr.length > 0) {
-            if (imgArr.length === updateUrl.length) {
-                upLoadImage();
-            }
-        }
-    }, [imgArr]);
 
     const [truyen, setTruyen] = useState("");
 

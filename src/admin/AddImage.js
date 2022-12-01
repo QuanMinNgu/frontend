@@ -1,5 +1,7 @@
+import axios from "axios";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { toast } from "react-toastify";
 import "./style.css";
 const AddImage = ({ update, setUpdate, updateUrl, setUpdateUrl }) => {
     const [image, setImage] = useState("");
@@ -24,12 +26,29 @@ const AddImage = ({ update, setUpdate, updateUrl, setUpdateUrl }) => {
         onDrop,
     });
 
-    useEffect(() => {
-        if (image) {
+    const handleAddImag = async () => {
+        const formData = new FormData();
+        formData.append("file", imgRef.current);
+        formData.append("upload_preset", "stphim");
+        try {
+            const res = await axios.post(
+                "https://api.cloudinary.com/v1_1/sttruyen/image/upload",
+                formData
+            );
+            const newUrl = "https:" + res.data.url.split(":")[1];
             setUpdate([...update, image]);
-            setUpdateUrl([...updateUrl, imgRef.current]);
+            setUpdateUrl([...updateUrl, newUrl]);
             setImage("");
             imgRef.current = "";
+            toast.success("Ok rùi");
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    useEffect(() => {
+        if (image) {
+            handleAddImag();
         }
     }, [image]);
 

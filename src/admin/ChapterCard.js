@@ -1,6 +1,8 @@
 import { isAllOf } from "@reduxjs/toolkit";
+import axios from "axios";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { toast } from "react-toastify";
 import "./style.css";
 const ChapterCard = ({
     update,
@@ -74,16 +76,30 @@ const ChapterCard = ({
         }
     }, [imgPo]);
 
-    const handleCreateImage = () => {
+    const handleCreateImage = async () => {
         if (imgPo === "Update") {
-            update.splice(index, 1, imageU);
-            updateUrl.splice(index, 1, imgURef.current);
-            setUpdate([...update]);
-            item = imageU;
-            setUpdateUrl([...updateUrl]);
-            imgURef.current = "";
-            setImageU("");
-            setimgPo(null);
+            const formData = new FormData();
+            formData.append("file", imgURef.current);
+            formData.append("upload_preset", "stphim");
+            try {
+                const res = await axios.post(
+                    "https://api.cloudinary.com/v1_1/sttruyen/image/upload",
+                    formData
+                );
+                const newUrl = "https:" + res.data.url.split(":")[1];
+                update.splice(index, 1, imageU);
+                updateUrl.splice(index, 1, newUrl);
+                setUpdate([...update]);
+                item = imageU;
+                setUpdateUrl([...updateUrl]);
+                imgURef.current = "";
+                setImageU("");
+                setimgPo(null);
+                toast.success("Ok rùi");
+                console.log(updateUrl);
+            } catch (err) {
+                console.log(err);
+            }
             if (scrolRef.current) {
                 scrolRef.current.scrollIntoView({
                     behavior: "smooth",
@@ -91,32 +107,58 @@ const ChapterCard = ({
                 });
             }
         } else if (imgPo === true) {
-            update.splice(index, 0, imageH);
-            updateUrl.splice(index, 0, imgHRef.current);
-            setUpdate([...update]);
-            setUpdateUrl([...updateUrl]);
-            imgHRef.current = "";
-            setImageH("");
-            setimgPo(null);
-            if (scrolRef.current) {
-                scrolRef.current.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start",
-                });
+            const formData = new FormData();
+            formData.append("file", imgHRef.current);
+            formData.append("upload_preset", "stphim");
+            try {
+                const res = await axios.post(
+                    "https://api.cloudinary.com/v1_1/sttruyen/image/upload",
+                    formData
+                );
+                const newUrl = "https:" + res.data.url.split(":")[1];
+                update.splice(index, 0, imageH);
+                updateUrl.splice(index, 0, newUrl);
+                setUpdate([...update]);
+                setUpdateUrl([...updateUrl]);
+                imgHRef.current = "";
+                setImageH("");
+                setimgPo(null);
+                if (scrolRef.current) {
+                    scrolRef.current.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                    });
+                }
+                toast.success("ok rùi");
+            } catch (err) {
+                console.log(err);
             }
         } else if (imgPo === false) {
-            update.splice(index + 1, 0, imageT);
-            updateUrl.splice(index + 1, 0, imgTRef.current);
-            setUpdate([...update]);
-            setUpdateUrl([...updateUrl]);
-            imgTRef.current = "";
-            setImageT("");
-            setimgPo(null);
-            if (scrolRef.current) {
-                scrolRef.current.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start",
-                });
+            const formData = new FormData();
+            formData.append("file", imgTRef.current);
+            formData.append("upload_preset", "stphim");
+            try {
+                const res = await axios.post(
+                    "https://api.cloudinary.com/v1_1/sttruyen/image/upload",
+                    formData
+                );
+                const newUrl = "https:" + res.data.url.split(":")[1];
+                update.splice(index + 1, 0, imageT);
+                updateUrl.splice(index + 1, 0, newUrl);
+                setUpdate([...update]);
+                setUpdateUrl([...updateUrl]);
+                imgTRef.current = "";
+                setImageT("");
+                setimgPo(null);
+                if (scrolRef.current) {
+                    scrolRef.current.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                    });
+                }
+                toast.success("ok rùi");
+            } catch (err) {
+                console.log(err);
             }
         }
     };
