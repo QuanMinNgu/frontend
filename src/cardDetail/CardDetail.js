@@ -23,6 +23,16 @@ const CardDetail = () => {
         window.scrollTo(0, 0);
     }, [slug]);
 
+    function dateFormat(date) {
+        const month = date.getMonth();
+        const day = date.getDate();
+        const hour = date.getHours();
+        const minute = date.getMinutes();
+        const monthString = month >= 10 ? month : `0${month}`;
+        const dayString = day >= 10 ? day : `0${day}`;
+        return `${hour}:${minute} ${dayString}-${monthString}-${date.getFullYear()}`;
+    }
+
     useEffect(() => {
         let here = true;
         const url = `/api/movie/${slug}`;
@@ -391,7 +401,14 @@ const CardDetail = () => {
                                             >
                                                 Chương {index + 1}
                                             </Link>
-                                            <span>{item?.createdAt}</span>
+                                            <span>
+                                                {item?.createdAt &&
+                                                    dateFormat(
+                                                        new Date(
+                                                            item?.createdAt
+                                                        )
+                                                    )}
+                                            </span>
                                         </div>
                                     ))}
                                 </div>

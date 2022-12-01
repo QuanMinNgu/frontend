@@ -14,7 +14,7 @@ const Card = ({ item }) => {
                                     style={{ marginRight: "0.3rem" }}
                                     className="fa-solid fa-eye"
                                 ></i>
-                                1,000,000
+                                {item?.watchs}
                             </h3>
                         </div>
                         <div className="card_image_infor_rating">
