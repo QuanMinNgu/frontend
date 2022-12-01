@@ -1,22 +1,27 @@
 import axios from "axios";
 import React, { useContext, useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "~/App";
 import CommentForm from "~/comment/CommentForm";
 import NotFound from "~/notfound/NotFound";
+import { isFailing, isLoading, isSuccess } from "~/redux/slice/auth";
 import "./style.css";
 const CardDetail = () => {
     const [currentStar, setCurrentStar] = useState(null);
-
     const [hoverStun, setHoverTurn] = useState(null);
+    const [hoverStar, setHoverStar] = useState(null);
+
+    const [update, setUpdate] = useState(false);
 
     const { slug } = useParams();
 
     const allStar = Array(5).fill(0);
-    const [hoverStar, setHoverStar] = useState(null);
 
     const [truyen, setTruyen] = useState("");
+
+    const dispatch = useDispatch();
 
     const ratingRef = useRef(0);
 
@@ -27,6 +32,7 @@ const CardDetail = () => {
     useEffect(() => {
         if (truyen) {
             ratingRef.current = truyen?.stars / (truyen?.reviewers * 5);
+            setUpdate(true);
         }
     }, [truyen]);
 
@@ -54,6 +60,7 @@ const CardDetail = () => {
         if (cache.current[url]) {
             return setTruyen(cache.current[url]);
         }
+        dispatch(isLoading());
         axios
             .get(url)
             .then((res) => {
@@ -61,8 +68,10 @@ const CardDetail = () => {
                     return;
                 }
                 setTruyen(res?.data?.product);
+                dispatch(isSuccess());
             })
             .catch((err) => {
+                dispatch(isFailing());
                 if (here) {
                     setCheck(true);
                     toast.error(err?.response?.data?.msg);
@@ -185,7 +194,12 @@ const CardDetail = () => {
                                             {currentStar ||
                                             hoverStar ||
                                             hoverStun ? (
-                                                <div className="card_Detail_infor_rating">
+                                                <div
+                                                    onMouseLeave={() => {
+                                                        setHoverTurn(null);
+                                                    }}
+                                                    className="card_Detail_infor_rating"
+                                                >
                                                     {allStar.map((_, index) => {
                                                         return hoverStar ? (
                                                             hoverStar >
@@ -311,10 +325,10 @@ const CardDetail = () => {
                                                     onMouseOver={() => {
                                                         setHoverTurn(1);
                                                     }}
-                                                    onMouseLeave={() => {
-                                                        setHoverTurn(null);
+                                                    style={{
+                                                        fontSize: "1.8rem",
                                                     }}
-                                                    className="card_Detail_infor_rating"
+                                                    className="card_image_infor_rating"
                                                 >
                                                     <i className="fa-regular fa-star"></i>
                                                     <i className="fa-regular fa-star"></i>

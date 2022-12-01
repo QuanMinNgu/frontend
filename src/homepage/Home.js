@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { UserContext } from "~/App";
+import { isFailing, isLoading, isSuccess } from "~/redux/slice/auth";
 import SwiperHome from "~/swiper/SwiperHome";
 import KindNavHome from "./KindNavHome";
 import "./style.css";
@@ -11,6 +13,8 @@ const Home = () => {
     }, []);
 
     const [detail, setDetail] = useState([]);
+
+    const dispatch = useDispatch();
 
     const { cache } = useContext(UserContext);
 
@@ -25,28 +29,34 @@ const Home = () => {
         if (cache.current["all"]) {
             return setDetail(cache.current["all"]);
         }
-        Promise.all(endpoints.map((endpoint) => axios.get(endpoint))).then(
-            axios.spread((...allData) => {
-                allData?.forEach((item) => {
-                    item?.data?.Products?.forEach((item) => {
-                        const url = `/api/movie/${item?.slug}`;
-                        if (!cache.current[url]) {
-                            cache.current[url] = item;
-                        }
+        dispatch(isLoading());
+        Promise.all(endpoints.map((endpoint) => axios.get(endpoint)))
+            .then(
+                axios.spread((...allData) => {
+                    allData?.forEach((item) => {
+                        item?.data?.Products?.forEach((item) => {
+                            const url = `/api/movie/${item?.slug}`;
+                            if (!cache.current[url]) {
+                                cache.current[url] = item;
+                            }
+                        });
                     });
-                });
-                cache.current["all"] = [...allData];
-                [...allData]?.forEach((item) => {
-                    item?.data?.Products?.forEach((infor) => {
-                        const url = `/api/movie/${infor?.slug}`;
-                        if (!cache.current[url]) {
-                            cache.current[url] = infor;
-                        }
+                    dispatch(isSuccess());
+                    cache.current["all"] = [...allData];
+                    [...allData]?.forEach((item) => {
+                        item?.data?.Products?.forEach((infor) => {
+                            const url = `/api/movie/${infor?.slug}`;
+                            if (!cache.current[url]) {
+                                cache.current[url] = infor;
+                            }
+                        });
                     });
-                });
-                setDetail([...allData]);
-            })
-        );
+                    setDetail([...allData]);
+                })
+            )
+            .catch((err) => {
+                dispatch(isFailing());
+            });
         return () => {
             here = false;
         };

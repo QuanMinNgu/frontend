@@ -1,11 +1,13 @@
 import axios from "axios";
 import React, { useContext, useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "~/App";
 import CommentForm from "~/comment/CommentForm";
 import ScrollTop from "~/components/scroll/ScrollTop";
 import NotFound from "~/notfound/NotFound";
+import { isFailing, isLoading, isSuccess } from "~/redux/slice/auth";
 import ImageWatch from "./ImageWatch";
 import "./style.css";
 const MovieWatch = () => {
@@ -13,6 +15,8 @@ const MovieWatch = () => {
 
     const [truyen, setTruyen] = useState("");
     const [check, setCheck] = useState(false);
+
+    const dispatch = useDispatch();
 
     const [chap, setChap] = useState(1);
 
@@ -30,15 +34,18 @@ const MovieWatch = () => {
         if (cache.current[url]) {
             return setTruyen(cache.current[url]);
         }
+        dispatch(isLoading());
         axios
             .get(url)
             .then((res) => {
+                dispatch(isSuccess());
                 if (!here) {
                     return;
                 }
                 setTruyen(res?.data?.product);
             })
             .catch((err) => {
+                dispatch(isFailing());
                 if (here) {
                     setCheck(true);
                     toast.error(err?.response?.data?.msg);
