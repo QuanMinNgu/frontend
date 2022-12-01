@@ -156,6 +156,26 @@ const Chapter = () => {
         };
     }, [slug]);
 
+    const handleDelete = async (e) => {
+        const checked = window.prompt("Bạn có muốn xóa?", "Yes");
+        if (checked === "Yes") {
+            const da = (await checkToken()) || auth.user?.accessToken;
+            try {
+                const data = await axios.delete(
+                    `/api/chapter/delete/${e?._id}`,
+                    {
+                        headers: {
+                            token: `Bearer ${da}`,
+                        },
+                    }
+                );
+                toast.success(data?.data?.msg);
+            } catch (err) {
+                return toast.error(err?.response?.data?.msg);
+            }
+        }
+    };
+
     return (
         <div className="chapter_container">
             <div className="grid wideS">
@@ -176,7 +196,11 @@ const Chapter = () => {
                                 >
                                     <span>Chương {index + 1}</span>
                                     <div className="chapter_button">
-                                        <button>Xóa</button>
+                                        <button
+                                            onClick={() => handleDelete(item)}
+                                        >
+                                            Xóa
+                                        </button>
                                         <button
                                             onClick={() => {
                                                 if (
