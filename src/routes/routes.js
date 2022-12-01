@@ -17,7 +17,11 @@ export const publicRouter = [
     { element: Register, path: "/register", exact: true },
     { element: ForgotPassword, path: "/forgot_password", exact: true },
     { element: CardDetail, path: "/:slug", layout: DefaultLayout },
-    { element: MovieWatch, path: "/truyen-tranh/:slug", layout: DefaultLayout },
+    {
+        element: MovieWatch,
+        path: "/truyen-tranh/:slug/:chapter",
+        layout: DefaultLayout,
+    },
     {
         element: ActiveAccount,
         path: "/account/active/:slug",

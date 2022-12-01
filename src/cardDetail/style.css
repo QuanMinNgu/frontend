@@ -173,8 +173,7 @@
 .card_Detail_chapter_lists{
     padding:1rem;
     border:0.1rem solid rgba(0,0,0,0.2);
-    min-height: 5rem;
-    max-height: 50rem;
+    height: 50rem;
     margin-top: 2rem;
     border-radius: 1rem;
     overflow-x: hidden;
