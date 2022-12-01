@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import "./style.css";
 const AddImage = ({ update, setUpdate, updateUrl, setUpdateUrl }) => {
@@ -6,10 +6,10 @@ const AddImage = ({ update, setUpdate, updateUrl, setUpdateUrl }) => {
     const imgRef = useRef("");
 
     const handleCreateImage = () => {
-        imgRef.current = "";
-        setImage("");
         setUpdate([...update, image]);
-        setUpdateUrl([...updateUrl], imgRef.current);
+        setUpdateUrl([...updateUrl, imgRef.current]);
+        setImage("");
+        imgRef.current = "";
     };
 
     const onDrop = useCallback((acceptedFiles) => {
@@ -17,12 +17,21 @@ const AddImage = ({ update, setUpdate, updateUrl, setUpdateUrl }) => {
         if (image) {
             URL.revokeObjectURL(image);
         }
-        imgRef.current = acceptedFiles[0];
         setImage(url);
+        imgRef.current = acceptedFiles[0];
     }, []);
     const { getRootProps, getInputProps } = useDropzone({
         onDrop,
     });
+
+    useEffect(() => {
+        if (image) {
+            setUpdate([...update, image]);
+            setUpdateUrl([...updateUrl, imgRef.current]);
+            setImage("");
+            imgRef.current = "";
+        }
+    }, [image]);
 
     return (
         <div className="addImg_container">
@@ -33,11 +42,11 @@ const AddImage = ({ update, setUpdate, updateUrl, setUpdateUrl }) => {
                     <img src={image} />
                 </div>
             </div>
-            {image && (
+            {/* {image && (
                 <div className="addImg_button">
                     <button onClick={handleCreateImage}>Đồng ý</button>
                 </div>
-            )}
+            )} */}
         </div>
     );
 };

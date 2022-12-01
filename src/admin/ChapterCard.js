@@ -121,6 +121,16 @@ const ChapterCard = ({
         }
     };
 
+    const handleDeleteImage = () => {
+        const checked = window.prompt("Xóa ảnh này?", "Yes");
+        if (checked === "Yes") {
+            update.splice(index, 1);
+            updateUrl.splice(index, 1);
+            setUpdate([...update]);
+            setUpdateUrl([...updateUrl]);
+        }
+    };
+
     return (
         <div ref={scrolRef} className="chapterCard_wrap">
             {imgPo !== null && (
@@ -212,6 +222,7 @@ const ChapterCard = ({
                                 color: "white",
                                 border: "0.05rem solid rgba(0,0,0,0.5)",
                             }}
+                            onClick={handleDeleteImage}
                         >
                             Xóa
                         </button>
