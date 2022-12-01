@@ -2,7 +2,7 @@ import React from "react";
 import { Navigation, Scrollbar, Autoplay } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCard from "./SwiperCard";
-const SwiperHome = ({ num }) => {
+const SwiperHome = ({ num, data }) => {
     return (
         <Swiper
             modules={[Navigation, Autoplay, Scrollbar]}
@@ -16,24 +16,11 @@ const SwiperHome = ({ num }) => {
             }}
             loop
         >
-            <SwiperSlide>
-                <SwiperCard />
-            </SwiperSlide>
-            <SwiperSlide>
-                <SwiperCard />
-            </SwiperSlide>
-            <SwiperSlide>
-                <SwiperCard />
-            </SwiperSlide>
-            <SwiperSlide>
-                <SwiperCard />
-            </SwiperSlide>
-            <SwiperSlide>
-                <SwiperCard />
-            </SwiperSlide>
-            <SwiperSlide>
-                <SwiperCard />
-            </SwiperSlide>
+            {data?.data?.Products?.map((item) => (
+                <SwiperSlide key={item?._id}>
+                    <SwiperCard item={item} />
+                </SwiperSlide>
+            ))}
         </Swiper>
     );
 };

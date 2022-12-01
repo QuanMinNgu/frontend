@@ -6,7 +6,7 @@ const Card = ({ item }) => {
         <div className="card_container">
             <Link to={`/${item?.slug}`}>
                 <div className="card_image_container">
-                    <img src="https://i.truyenvua.com/ebook/190x247/boku-no-hero-academia_1552459650.jpg?gf=hdfgdfg&mobile=2" />
+                    <img src={item?.image} />
                     <div className="card_image_infor">
                         <div className="card_image_infor_watch">
                             <h3>
