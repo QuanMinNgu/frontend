@@ -1,6 +1,6 @@
 import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "~/App";
 import CommentForm from "~/comment/CommentForm";
@@ -15,6 +15,8 @@ const MovieWatch = () => {
     const [check, setCheck] = useState(false);
 
     const [chap, setChap] = useState(1);
+
+    const navigate = useNavigate();
 
     const { cache } = useContext(UserContext);
 
@@ -114,10 +116,18 @@ const MovieWatch = () => {
                                         Chương trước
                                     </div>
                                 </Link>
-                                <select className="movie_select">
+                                <select
+                                    className="movie_select"
+                                    onChange={(e) => {
+                                        navigate(
+                                            `/truyen-tranh/${truyen?.slug}/${e.target.value}`
+                                        );
+                                    }}
+                                >
                                     {truyen?.chapters?.map((item, index) => {
                                         return chap * 1 === index + 1 ? (
                                             <option
+                                                value={`chuong-${index + 1}`}
                                                 selected="selected"
                                                 key={item?._id + "chapterss"}
                                             >
@@ -125,6 +135,7 @@ const MovieWatch = () => {
                                             </option>
                                         ) : (
                                             <option
+                                                value={`chuong-${index + 1}`}
                                                 key={item?._id + "chaptersss"}
                                             >
                                                 Chương {index + 1}
@@ -186,17 +197,27 @@ const MovieWatch = () => {
                                 <i className="fa-solid fa-angles-left"></i>
                             </div>
                         </Link>
-                        <select>
+                        <select
+                            onChange={(e) => {
+                                navigate(
+                                    `/truyen-tranh/${truyen?.slug}/${e.target.value}`
+                                );
+                            }}
+                        >
                             {truyen?.chapters?.map((item, index) => {
                                 return chap * 1 === index + 1 ? (
                                     <option
+                                        value={`chuong-${index + 1}`}
                                         selected="selected"
                                         key={item?._id + "chapterss"}
                                     >
                                         Chương {index + 1}
                                     </option>
                                 ) : (
-                                    <option key={item?._id + "chaptersss"}>
+                                    <option
+                                        value={`chuong-${index + 1}`}
+                                        key={item?._id + "chaptersss"}
+                                    >
                                         Chương {index + 1}
                                     </option>
                                 );
