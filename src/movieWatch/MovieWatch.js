@@ -29,6 +29,36 @@ const MovieWatch = () => {
     }, [slug, chapter]);
 
     useEffect(() => {
+        let here = 1;
+        document.addEventListener("keyup", (e) => {
+            if (here === 1) {
+                if (e.key === "ArrowRight") {
+                    if (truyen) {
+                        const cha = chapter.split("-")[1] * 1;
+                        if (cha * 1 < truyen?.chapters?.length) {
+                            navigate(
+                                `/truyen-tranh/${slug}/chuong-${cha * 1 + 1}`
+                            );
+                        }
+                    }
+                } else if (e.key === "ArrowLeft") {
+                    if (truyen) {
+                        const cha = chapter.split("-")[1] * 1;
+                        if (cha * 1 > 1) {
+                            navigate(
+                                `/truyen-tranh/${slug}/chuong-${cha * 1 - 1}`
+                            );
+                        }
+                    }
+                }
+            }
+        });
+        return () => {
+            here = 2;
+        };
+    }, [slug, chapter, truyen]);
+
+    useEffect(() => {
         let here = true;
         const url = `/api/movie/${slug}`;
         if (cache.current[url]) {
