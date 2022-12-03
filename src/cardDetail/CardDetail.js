@@ -8,7 +8,10 @@ import CommentForm from "~/comment/CommentForm";
 import NotFound from "~/notfound/NotFound";
 import { isFailing, isLoading, isSuccess } from "~/redux/slice/auth";
 import "./style.css";
+import moment from "moment";
+import localization from "moment/locale/vi";
 const CardDetail = () => {
+    moment.locale("vi", localization);
     const [currentStar, setCurrentStar] = useState(null);
     const [hoverStun, setHoverTurn] = useState(null);
     const [hoverStar, setHoverStar] = useState(null);
@@ -38,21 +41,11 @@ const CardDetail = () => {
 
     const [check, setCheck] = useState(false);
 
-    const { cache } = useContext(UserContext);
+    const { cache, socket } = useContext(UserContext);
 
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [slug]);
-
-    function dateFormat(date) {
-        const month = date.getMonth();
-        const day = date.getDate();
-        const hour = date.getHours();
-        const minute = date.getMinutes();
-        const monthString = month >= 10 ? month : `0${month}`;
-        const dayString = day >= 10 ? day : `0${day}`;
-        return `${hour}:${minute} ${dayString}-${monthString}-${date.getFullYear()}`;
-    }
 
     useEffect(() => {
         let here = true;
@@ -474,11 +467,9 @@ const CardDetail = () => {
                                             </Link>
                                             <span>
                                                 {item?.createdAt &&
-                                                    dateFormat(
-                                                        new Date(
-                                                            item?.createdAt
-                                                        )
-                                                    )}
+                                                    moment(
+                                                        item?.createdAt
+                                                    ).fromNow()}
                                             </span>
                                         </div>
                                     ))}

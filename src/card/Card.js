@@ -1,10 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import "./style.css";
+import moment from "moment";
+import localization from "moment/locale/vi";
 const Card = ({ item }) => {
     const ratingRef = useRef(0);
+    moment.locale("vi", localization);
 
-    const [updaet, setUpdate] = useState(false);
+    const [update, setUpdate] = useState(false);
 
     const clipPath = {
         clipPath: `inset(0 ${100 - ratingRef.current * 100}% 0 0)`,
@@ -61,7 +64,13 @@ const Card = ({ item }) => {
                     </div>
                 </Link>
             </div>
-            <div className="update_time_container">12 ngày trước</div>
+            <div className="update_time_container">
+                {item?.chapters?.length > 0
+                    ? moment(
+                          item?.chapters[item?.chapters?.length - 1]?.createdAt
+                      ).fromNow()
+                    : "Chưa cập nhật"}
+            </div>
         </div>
     );
 };

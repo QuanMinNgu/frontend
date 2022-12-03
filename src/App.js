@@ -16,12 +16,23 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { isLogin } from "./redux/slice/auth";
 import Loading from "./loading/Loading";
+import io from "socket.io-client";
 export const UserContext = createContext();
 
 function App() {
     const auth = useSelector((state) => state.auth);
 
     const cache = useRef({});
+
+    const [socket, setSocket] = useState("");
+
+    useEffect(() => {
+        const socket = io("http://localhost:5000");
+        setSocket(socket);
+        return () => {
+            socket.close();
+        };
+    }, []);
 
     const dispatch = useDispatch();
 
@@ -66,7 +77,9 @@ function App() {
     }, []);
 
     return (
-        <UserContext.Provider value={{ store, setStore, checkToken, cache }}>
+        <UserContext.Provider
+            value={{ store, setStore, checkToken, cache, socket }}
+        >
             <Router>
                 <div className="App">
                     <Routes>
