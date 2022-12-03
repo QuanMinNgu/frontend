@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { UserContext } from "~/App";
 import Reply from "./Reply";
+import ReplyCard from "./ReplyCard";
 import "./style.css";
 const CommentCard = React.memo(({ item, userid, comments, setComments }) => {
     const [reply, setReply] = useState(false);
@@ -14,14 +15,6 @@ const CommentCard = React.memo(({ item, userid, comments, setComments }) => {
     const { store, checkToken } = useContext(UserContext);
 
     const auth = useSelector((state) => state.auth);
-
-    useEffect(() => {
-        if (item) {
-            document.getElementById(
-                `${item?._id + "A"}`
-            ).innerHTML = `<span>${item?.content}</span>`;
-        }
-    }, [item]);
 
     const handleDeleteComment = async () => {
         const da = (await checkToken()) || auth.user?.accessToken;
@@ -92,17 +85,16 @@ const CommentCard = React.memo(({ item, userid, comments, setComments }) => {
                                 ))}
                         </div>
                     </div>
-                    <div
-                        id={item?._id + "A"}
-                        className="comment_detail_clearly"
-                    ></div>
+                    <div className="comment_detail_clearly">
+                        {item?.content}
+                    </div>
                 </div>
                 <div className="comment_navbar_container">
                     <div className="comment_navbar-like">
                         0{" "}
                         <i
                             style={{ cursor: "pointer" }}
-                            className="fa-solid fa-thumbs-up"
+                            className="fa-solid fa-thumbs-up icons_chane"
                         ></i>
                     </div>
                     <div
@@ -124,7 +116,16 @@ const CommentCard = React.memo(({ item, userid, comments, setComments }) => {
                         </i>
                     </div>
                 </div>
-                {reply && <Reply />}
+                {reply && (
+                    <Reply
+                        item={item}
+                        setReply={setReply}
+                        name={item?.user?.name}
+                    />
+                )}
+                {item?.replies?.map((item) => (
+                    <ReplyCard item={item} key={item?._id + "Ads"} />
+                ))}
             </div>
         </div>
     );

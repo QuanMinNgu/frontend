@@ -30,9 +30,6 @@ function App() {
         const socket = io("http://localhost:5000");
         setSocket(socket);
         return () => {
-            socket.emit("disConnect", {
-                id: socket.id,
-            });
             socket.close();
         };
     }, []);

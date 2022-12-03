@@ -66,6 +66,19 @@ const CommentForm = React.memo(() => {
                 comments.unshift({ ...infor });
                 setComments([...comments]);
             });
+            socket.on("backRep", (infor) => {
+                const newArr = comments.map((item) => {
+                    if (
+                        item?._id?.toString() === infor?.commentid?.toString()
+                    ) {
+                        const newObj = { ...infor };
+                        delete newObj["commentid"];
+                        item?.replies?.unshift({ ...newObj });
+                    }
+                    return item;
+                });
+                setComments(newArr);
+            });
         }
     }, [socket, comments]);
 

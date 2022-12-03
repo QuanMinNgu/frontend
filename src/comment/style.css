@@ -76,8 +76,10 @@
 }
 .comment_detail_clearly{
     margin-top: 1rem;
-    font-size: 1.5rem;
+    font-size: 1.7rem;
     font-family: 'EB Garamond', serif;
+    line-height: 2.5rem;
+
 }
 .comment_detail_clearly > span{
     color:#56CCF2;
@@ -115,7 +117,21 @@
     justify-content: space-between;
     align-items: center;
 }
-
+.reply_container > button{
+    width: 7rem;
+    height: 3.5rem;
+    margin-top: 0.5rem;
+    cursor: pointer;
+    float:right;
+    background-color: #56CCF2;
+    border: 0.1rem solid white;
+    color:white;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+.reply_container > button:hover{
+    transform: scale(1.07);
+}
 .comment_send_button > button{
     padding:0.8rem 2.5rem;
     cursor: pointer;
@@ -162,4 +178,13 @@
 }
 .comment_edit_items:hover{
     background-color: rgba(0,0,0,0.1);
+}
+.reply_card_container{
+    width: 100%;
+    margin-top: 1.5rem;
+    display: flex;
+    position: relative;
+}
+.icons_chane:active{
+    transform: translateY(-0.4rem);
 }
