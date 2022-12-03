@@ -16,6 +16,8 @@ const CardDetail = () => {
     const [hoverStun, setHoverTurn] = useState(null);
     const [hoverStar, setHoverStar] = useState(null);
 
+    const [messages, setMessages] = useState([]);
+
     const [update, setUpdate] = useState(false);
 
     const { slug } = useParams();
@@ -41,7 +43,7 @@ const CardDetail = () => {
 
     const [check, setCheck] = useState(false);
 
-    const { cache, socket } = useContext(UserContext);
+    const { cache } = useContext(UserContext);
 
     useEffect(() => {
         window.scrollTo(0, 0);
