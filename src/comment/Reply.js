@@ -1,5 +1,6 @@
 import React, { useContext, useRef } from "react";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "~/App";
 import "./style.css";
@@ -7,6 +8,8 @@ const Reply = ({ name, setReply, item }) => {
     const contentRef = useRef();
 
     const { socket, checkToken } = useContext(UserContext);
+
+    const { slug } = useParams();
 
     const auth = useSelector((state) => state.auth);
 
@@ -26,6 +29,7 @@ const Reply = ({ name, setReply, item }) => {
                 }`,
                 token: da,
                 id: item?._id,
+                slug: slug,
             });
             setReply(false);
         }

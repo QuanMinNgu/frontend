@@ -20,6 +20,8 @@ const CommentForm = React.memo(() => {
 
     const [comments, setComments] = useState([]);
 
+    const checkRef = useRef(false);
+
     useEffect(() => {
         if (socket) {
             socket.emit("join", {
@@ -34,6 +36,7 @@ const CommentForm = React.memo(() => {
         axios.get(url).then((res) => {
             if (here) {
                 setComments(res?.data?.messages);
+                checkRef.current = true;
             }
         });
         return () => {
@@ -60,25 +63,33 @@ const CommentForm = React.memo(() => {
         commentRef.current.value = "";
     };
 
+    const inforRef = useRef();
+
     useEffect(() => {
         if (socket) {
-            socket.on("backMan", (infor) => {
-                comments.unshift({ ...infor });
-                setComments([...comments]);
-            });
-            socket.on("backRep", (infor) => {
-                const newArr = comments.map((item) => {
-                    if (
-                        item?._id?.toString() === infor?.commentid?.toString()
-                    ) {
-                        const newObj = { ...infor };
-                        delete newObj["commentid"];
-                        item?.replies?.unshift({ ...newObj });
-                    }
-                    return item;
+            if (checkRef.current) {
+                socket.on("backMan", (infor) => {
+                    comments.unshift({ ...infor });
+                    setComments([...comments]);
                 });
-                setComments(newArr);
-            });
+                socket.on("backRep", (infor) => {
+                    if (inforRef.current !== infor?._id) {
+                        const newArr = comments.map((item) => {
+                            if (
+                                item?._id?.toString() ===
+                                infor?.commentid?.toString()
+                            ) {
+                                const newObj = { ...infor };
+                                delete newObj["commentid"];
+                                item?.replies?.push({ ...newObj });
+                            }
+                            return item;
+                        });
+                        setComments(newArr);
+                    }
+                    inforRef.current = infor?._id;
+                });
+            }
         }
     }, [socket, comments]);
 

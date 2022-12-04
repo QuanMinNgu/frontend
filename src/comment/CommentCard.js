@@ -123,8 +123,15 @@ const CommentCard = React.memo(({ item, userid, comments, setComments }) => {
                         name={item?.user?.name}
                     />
                 )}
-                {item?.replies?.map((item) => (
-                    <ReplyCard item={item} key={item?._id + "Ads"} />
+                {item?.replies?.map((infor) => (
+                    <ReplyCard
+                        userid={userid}
+                        item={infor}
+                        key={infor?._id + "Ads"}
+                        parentId={item}
+                        setComments={setComments}
+                        comments={comments}
+                    />
                 ))}
             </div>
         </div>
