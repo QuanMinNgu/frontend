@@ -1,6 +1,6 @@
 import axios from "axios";
 import moment from "moment";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { UserContext } from "~/App";
@@ -10,9 +10,9 @@ const ReplyCard = React.memo(
     ({ item, userid, parentId, setComments, comments }) => {
         const [reply, setReply] = useState(false);
 
-        const [like, setLike] = useState(false);
+        const [like, setLike] = useState(true);
 
-        const [likeNum, setLikeNum] = useState(1);
+        const likeRef = useRef(0);
 
         const auth = useSelector((state) => state.auth);
 
@@ -21,15 +21,8 @@ const ReplyCard = React.memo(
         const { store, checkToken } = useContext(UserContext);
 
         useEffect(() => {
-            if (like) {
-                setLikeNum(likeNum + 1);
-            } else {
-                setLikeNum(likeNum - 1);
-            }
-        }, [like]);
-
-        useEffect(() => {
             if (item) {
+                likeRef.current = item?.likes;
                 document.getElementById(
                     `${item?._id + "replies"}`
                 ).innerHTML = `${item?.content}`;
@@ -123,10 +116,15 @@ const ReplyCard = React.memo(
                     </div>
                     <div className="comment_navbar_container">
                         <div className="comment_navbar-like">
-                            {likeNum}
+                            {likeRef.current}
                             {"  "}
                             <i
                                 onClick={() => {
+                                    if (like) {
+                                        likeRef.current++;
+                                    } else {
+                                        likeRef.current--;
+                                    }
                                     setLike(!like);
                                 }}
                                 style={{ cursor: "pointer" }}
