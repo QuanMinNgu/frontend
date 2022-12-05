@@ -188,3 +188,17 @@
 .icons_chane:active{
     transform: translateY(-0.4rem);
 }
+
+.update_button_container > button{
+    margin-left: 1rem;
+    padding:0 1rem;
+    height: 3rem;
+    background-color: #56CCF2;
+    color:white;
+    border: 0.1rem solid white;
+    cursor: pointer;
+    border-radius: 0.5rem;
+}
+.update_button_container > button:hover{
+    transform: scale(.9);
+}

@@ -8,6 +8,7 @@ import React, {
     useState,
 } from "react";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "~/App";
 import Reply from "./Reply";
@@ -18,7 +19,11 @@ const CommentCard = React.memo(({ item, userid, comments, setComments }) => {
 
     const [edit, setEdit] = useState(false);
 
+    const { slug } = useParams();
+
     const { store, checkToken, socket } = useContext(UserContext);
+
+    const [updateMessage, setUpdateMessage] = useState(false);
 
     const [like, setLike] = useState(true);
 
@@ -67,6 +72,45 @@ const CommentCard = React.memo(({ item, userid, comments, setComments }) => {
         setLike(!like);
     };
 
+    const handleEditMessage = () => {
+        setEdit(false);
+        setUpdateMessage(true);
+        document.getElementById(
+            item?._id + "editcontent"
+        ).contentEditable = true;
+        document.getElementById(item?._id + "editcontent").focus();
+    };
+
+    const handleUpdateMessage = () => {
+        setUpdateMessage(false);
+        const detail = document.getElementById(
+            item?._id + "editcontent"
+        ).innerHTML;
+        if (detail !== item?.content) {
+            if (socket) {
+                socket.emit("UpdateMessage", {
+                    id: item?._id,
+                    content: detail,
+                    slug: slug,
+                });
+            }
+        }
+    };
+
+    useEffect(() => {
+        if (socket) {
+            socket.on("updateComment", (infor) => {
+                const newArr = comments?.map((item) => {
+                    if (item?._id?.toString() === infor?.id?.toString()) {
+                        item.content = infor?.content;
+                    }
+                    return item;
+                });
+                setComments(newArr);
+            });
+        }
+    }, [socket, comments]);
+
     return (
         <div className="comment_card_container">
             <div className="comment_card_image">
@@ -78,6 +122,23 @@ const CommentCard = React.memo(({ item, userid, comments, setComments }) => {
                         <div className="comment_detail_infor">
                             <h3>{item?.user?.name}</h3>
                             {item?.chapter && <i>***Chương {item?.chapter}</i>}
+                            {updateMessage && (
+                                <div className="update_button_container">
+                                    <button onClick={handleUpdateMessage}>
+                                        Cập nhật
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setUpdateMessage(false);
+                                        }}
+                                        style={{
+                                            backgroundColor: "rgba(0,0,0,0.4)",
+                                        }}
+                                    >
+                                        Hủy
+                                    </button>
+                                </div>
+                            )}
                         </div>
                         <div className="comment_edit">
                             <i
@@ -90,7 +151,10 @@ const CommentCard = React.memo(({ item, userid, comments, setComments }) => {
                             {edit &&
                                 (item?.user?._id?.toString() === userid ? (
                                     <div className="comment_edit_container">
-                                        <div className="comment_edit_items">
+                                        <div
+                                            onClick={handleEditMessage}
+                                            className="comment_edit_items"
+                                        >
                                             Chỉnh sửa
                                         </div>
                                         <div
@@ -115,7 +179,10 @@ const CommentCard = React.memo(({ item, userid, comments, setComments }) => {
                                 ))}
                         </div>
                     </div>
-                    <div className="comment_detail_clearly">
+                    <div
+                        id={item?._id + "editcontent"}
+                        className="comment_detail_clearly"
+                    >
                         {item?.content}
                     </div>
                 </div>

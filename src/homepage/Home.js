@@ -12,7 +12,7 @@ const Home = () => {
         window.scrollTo(0, 0);
     }, []);
 
-    const [detail, setDetail] = useState([]);
+    const [detail, setDetail] = useState([[], [], [], []]);
 
     const dispatch = useDispatch();
 

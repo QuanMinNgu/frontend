@@ -36,7 +36,6 @@ const Header = () => {
         Promise.all(apiPoints.map((endpoint) => axios.get(endpoint)))
             .then(
                 axios.spread((...allData) => {
-                    console.log(allData);
                     dispatch(isSuccess());
                     allData?.forEach((item, index) => {
                         if (index === 0) {
