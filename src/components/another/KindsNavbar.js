@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const KindsNavbar = ({ name }) => {
+const KindsNavbar = ({ name, slug, item }) => {
     return (
         <li style={{ cursor: "arrow" }}>
             <span className="navbar_item-infor">
@@ -9,15 +9,15 @@ const KindsNavbar = ({ name }) => {
                 <i className="fa-solid fa-sort-down kinds_icons"></i>
             </span>
             <ul className="navbar_item-kinds_container">
-                <Link className="navbar_item-kinds_items" to="/">
-                    <li>Hành động</li>
-                </Link>
-                <Link className="navbar_item-kinds_items" to="/">
-                    <li>Hành động</li>
-                </Link>
-                <Link className="navbar_item-kinds_items" to="/">
-                    <li>Hành động</li>
-                </Link>
+                {item?.map((item) => (
+                    <Link
+                        key={item?._id + "Kinds"}
+                        className="navbar_item-kinds_items"
+                        to={`${slug + item?.slug}`}
+                    >
+                        <li>{item?.name}</li>
+                    </Link>
+                ))}
             </ul>
         </li>
     );

@@ -22,10 +22,25 @@ const MovieWatch = () => {
 
     const navigate = useNavigate();
 
-    const { cache } = useContext(UserContext);
+    const { cache, socket } = useContext(UserContext);
 
     useEffect(() => {
         window.scrollTo(0, 0);
+    }, [slug, chapter]);
+
+    useEffect(() => {
+        const timeOut = setTimeout(() => {
+            if (slug) {
+                if (socket) {
+                    socket.emit("watching", {
+                        id: truyen?._id,
+                    });
+                }
+            }
+        }, 10000);
+        return () => {
+            clearTimeout(timeOut);
+        };
     }, [slug, chapter]);
 
     useEffect(() => {

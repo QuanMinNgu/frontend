@@ -1,6 +1,12 @@
 import axios from "axios";
 import moment from "moment";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {
+    useCallback,
+    useContext,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { UserContext } from "~/App";
@@ -12,7 +18,7 @@ const CommentCard = React.memo(({ item, userid, comments, setComments }) => {
 
     const [edit, setEdit] = useState(false);
 
-    const { store, checkToken } = useContext(UserContext);
+    const { store, checkToken, socket } = useContext(UserContext);
 
     const [like, setLike] = useState(true);
 
@@ -45,6 +51,21 @@ const CommentCard = React.memo(({ item, userid, comments, setComments }) => {
             likeRef.current = item?.likes;
         }
     }, [item]);
+
+    const handleLike = () => {
+        if (socket) {
+            socket.emit("Like", {
+                id: item?._id,
+                type: like,
+            });
+        }
+        if (like) {
+            likeRef.current++;
+        } else {
+            likeRef.current--;
+        }
+        setLike(!like);
+    };
 
     return (
         <div className="comment_card_container">
@@ -100,16 +121,9 @@ const CommentCard = React.memo(({ item, userid, comments, setComments }) => {
                 </div>
                 <div className="comment_navbar_container">
                     <div className="comment_navbar-like">
-                        {likeRef.current}{" "}
+                        {likeRef.current || item?.likes}{" "}
                         <i
-                            onClick={() => {
-                                if (like) {
-                                    likeRef.current++;
-                                } else {
-                                    likeRef.current--;
-                                }
-                                setLike(!like);
-                            }}
+                            onClick={handleLike}
                             style={{ cursor: "pointer" }}
                             className="fa-solid fa-thumbs-up icons_chane"
                         ></i>

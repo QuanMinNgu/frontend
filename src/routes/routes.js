@@ -10,6 +10,7 @@ import CardDetail from "~/cardDetail/CardDetail";
 import DefaultLayout from "~/components/defaultLayout/DefaultLayout";
 import Home from "~/homepage/Home";
 import MovieWatch from "~/movieWatch/MovieWatch";
+import SearchingPage from "~/searchPage/SearchingPage";
 
 export const publicRouter = [
     { element: Home, path: "/", exact: true, layout: DefaultLayout },
@@ -17,6 +18,7 @@ export const publicRouter = [
     { element: Register, path: "/register", exact: true },
     { element: ForgotPassword, path: "/forgot_password", exact: true },
     { element: CardDetail, path: "/:slug", layout: DefaultLayout },
+    { element: SearchingPage, path: "/tim-kiem", layout: DefaultLayout },
     {
         element: MovieWatch,
         path: "/truyen-tranh/:slug/:chapter",

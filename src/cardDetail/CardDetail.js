@@ -16,15 +16,17 @@ const CardDetail = () => {
     const [hoverStun, setHoverTurn] = useState(null);
     const [hoverStar, setHoverStar] = useState(null);
 
-    const [messages, setMessages] = useState([]);
-
     const [update, setUpdate] = useState(false);
+
+    const typeUpdateRef = useRef(false);
 
     const { slug } = useParams();
 
     const allStar = Array(5).fill(0);
 
     const [truyen, setTruyen] = useState("");
+
+    const { socket } = useContext(UserContext);
 
     const dispatch = useDispatch();
 
@@ -40,6 +42,19 @@ const CardDetail = () => {
             setUpdate(true);
         }
     }, [truyen]);
+
+    useEffect(() => {
+        if (socket) {
+            if (currentStar) {
+                socket.emit("rating", {
+                    id: truyen?._id,
+                    type: typeUpdateRef.current,
+                    star: currentStar,
+                });
+                typeUpdateRef.current = true;
+            }
+        }
+    }, [currentStar]);
 
     const [check, setCheck] = useState(false);
 

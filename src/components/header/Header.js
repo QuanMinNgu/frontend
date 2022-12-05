@@ -1,21 +1,63 @@
-import React, { useContext } from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "~/App";
-import { isLogOut } from "~/redux/slice/auth";
+import { isFailing, isLoading, isLogOut, isSuccess } from "~/redux/slice/auth";
 import KindsNavbar from "../another/KindsNavbar";
 import "./style.css";
 const Header = () => {
-    const { store } = useContext(UserContext);
+    const { store, cache } = useContext(UserContext);
 
     const auth = useSelector((state) => state.auth);
     const dispatch = useDispatch();
+
+    const [kinds, setKinds] = useState([]);
+    const [countries, setCountries] = useState([]);
 
     const handleSignOut = () => {
         dispatch(isLogOut());
         toast.success("Đăng xuất thành công.");
     };
+
+    useEffect(() => {
+        const apiPoints = ["/api/kind", "/api/country"];
+        let here = true;
+        if (cache.current[apiPoints[0]] && cache.current[apiPoints[1]]) {
+            setKinds(cache.current[apiPoints[0]]);
+            return setCountries(cache.current[apiPoints[1]]);
+        } else if (cache.current[apiPoints[1]]) {
+            return setCountries(cache.current[apiPoints[1]]);
+        } else if (cache.current[apiPoints[0]]) {
+            return setKinds(cache.current[apiPoints[0]]);
+        }
+        dispatch(isLoading());
+        Promise.all(apiPoints.map((endpoint) => axios.get(endpoint)))
+            .then(
+                axios.spread((...allData) => {
+                    console.log(allData);
+                    dispatch(isSuccess());
+                    allData?.forEach((item, index) => {
+                        if (index === 0) {
+                            setKinds(item?.data?.kinds);
+                            cache.current["/api/kind"] = item?.data?.kinds;
+                        } else if (index === 1) {
+                            setCountries(item?.data?.countries);
+                            cache.current["/api/country"] =
+                                item?.data?.countries;
+                        }
+                    });
+                })
+            )
+            .catch((err) => {
+                console.log(err);
+                dispatch(isFailing());
+            });
+        return () => {
+            here = false;
+        };
+    }, []);
 
     return (
         <div className="header_wrap">
@@ -127,21 +169,35 @@ const Header = () => {
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link className="navbar_items" to="/">
+                                        <Link
+                                            className="navbar_items"
+                                            to="/tim-kiem?sort=-watchs"
+                                        >
                                             <div className="navbar_item-infor">
                                                 Truyện Top
                                             </div>
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link className="navbar_items" to="/">
+                                        <Link
+                                            className="navbar_items"
+                                            to="/tim-kiem"
+                                        >
                                             <div className="navbar_item-infor">
                                                 Truyện Mới
                                             </div>
                                         </Link>
                                     </li>
-                                    <KindsNavbar name="Thể Loại" />
-                                    <KindsNavbar name="Quốc Gia" />
+                                    <KindsNavbar
+                                        item={kinds}
+                                        slug="/tim-kiem?kind="
+                                        name="Thể Loại"
+                                    />
+                                    <KindsNavbar
+                                        item={countries}
+                                        slug="/tim-kiem?country="
+                                        name="Quốc Gia"
+                                    />
                                 </ul>
                             </div>
                         </div>
