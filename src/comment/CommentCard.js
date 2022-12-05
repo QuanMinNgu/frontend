@@ -9,7 +9,6 @@ import React, {
 } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import { UserContext } from "~/App";
 import Reply from "./Reply";
 import ReplyCard from "./ReplyCard";
@@ -29,26 +28,18 @@ const CommentCard = React.memo(({ item, userid, comments, setComments }) => {
 
     const likeRef = useRef();
 
+    const contenRef = useRef();
+
     const auth = useSelector((state) => state.auth);
 
     const handleDeleteComment = async () => {
         const da = (await checkToken()) || auth.user?.accessToken;
-        try {
-            const data = await axios.delete(
-                `/api/message/delete/${item?._id}`,
-                {
-                    headers: {
-                        token: `Bearer ${da}`,
-                    },
-                }
-            );
-            const dat = comments.filter(
-                (infor) => infor?._id?.toString() !== item?._id?.toString()
-            );
-            setComments(dat);
-            toast.success(data?.data?.msg);
-        } catch (err) {
-            toast.error(err?.response?.data?.msg);
+        if (socket) {
+            socket.emit("deleteMessage", {
+                id: item?._id,
+                token: da,
+                slug: slug,
+            });
         }
     };
     useEffect(() => {
@@ -75,41 +66,32 @@ const CommentCard = React.memo(({ item, userid, comments, setComments }) => {
     const handleEditMessage = () => {
         setEdit(false);
         setUpdateMessage(true);
-        document.getElementById(
-            item?._id + "editcontent"
-        ).contentEditable = true;
-        document.getElementById(item?._id + "editcontent").focus();
+        contenRef.current.contentEditable = "true";
+        contenRef.current.focus();
     };
 
-    const handleUpdateMessage = () => {
+    const handleUpdateMessage = async () => {
+        contenRef.current.contentEditable = "false";
         setUpdateMessage(false);
-        const detail = document.getElementById(
-            item?._id + "editcontent"
-        ).innerHTML;
+        const da = (await checkToken()) || auth.user?.accessToken;
+        const detail = contenRef.current.innerHTML;
         if (detail !== item?.content) {
             if (socket) {
                 socket.emit("UpdateMessage", {
                     id: item?._id,
                     content: detail,
                     slug: slug,
+                    token: da,
                 });
             }
         }
     };
 
     useEffect(() => {
-        if (socket) {
-            socket.on("updateComment", (infor) => {
-                const newArr = comments?.map((item) => {
-                    if (item?._id?.toString() === infor?.id?.toString()) {
-                        item.content = infor?.content;
-                    }
-                    return item;
-                });
-                setComments(newArr);
-            });
+        if (item) {
+            contenRef.current.innerHTML = item?.content;
         }
-    }, [socket, comments]);
+    }, [item]);
 
     return (
         <div className="comment_card_container">
@@ -180,11 +162,9 @@ const CommentCard = React.memo(({ item, userid, comments, setComments }) => {
                         </div>
                     </div>
                     <div
-                        id={item?._id + "editcontent"}
+                        ref={contenRef}
                         className="comment_detail_clearly"
-                    >
-                        {item?.content}
-                    </div>
+                    ></div>
                 </div>
                 <div className="comment_navbar_container">
                     <div className="comment_navbar-like">

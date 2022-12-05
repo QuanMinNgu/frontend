@@ -2,6 +2,7 @@ import axios from "axios";
 import moment from "moment";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "~/App";
 import Reply from "./Reply";
@@ -18,7 +19,9 @@ const ReplyCard = React.memo(
 
         const [edit, setEdit] = useState(false);
 
-        const { store, checkToken } = useContext(UserContext);
+        const { slug } = useParams();
+
+        const { store, checkToken, socket } = useContext(UserContext);
 
         useEffect(() => {
             if (item) {
@@ -60,6 +63,38 @@ const ReplyCard = React.memo(
             }
         };
 
+        const [updateMessage, setUpdateMessage] = useState(false);
+
+        const handleUpdateMessage = async () => {
+            setUpdateMessage(false);
+            document.getElementById(
+                `${item?._id + "replies"}`
+            ).contentEditable = false;
+            const detail = document.getElementById(
+                `${item?._id + "replies"}`
+            ).innerHTML;
+            const da = (await checkToken()) || auth.user?.accessToken;
+            if (detail !== item?.content) {
+                if (socket) {
+                    socket.emit("UpdateReplyMessage", {
+                        id: item?._id,
+                        content: detail,
+                        slug: slug,
+                        token: da,
+                    });
+                }
+            }
+        };
+
+        const handleEditMessage = () => {
+            setEdit(false);
+            setUpdateMessage(true);
+            document.getElementById(
+                `${item?._id + "replies"}`
+            ).contentEditable = true;
+            document.getElementById(`${item?._id + "replies"}`).focus();
+        };
+
         return (
             <div className="reply_card_container">
                 <div className="comment_card_image">
@@ -70,6 +105,24 @@ const ReplyCard = React.memo(
                         <div className="comment_detail_infor_container">
                             <div className="comment_detail_infor">
                                 <h3>{item?.user?.name}</h3>
+                                {updateMessage && (
+                                    <div className="update_button_container">
+                                        <button onClick={handleUpdateMessage}>
+                                            Cập nhật
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setUpdateMessage(false);
+                                            }}
+                                            style={{
+                                                backgroundColor:
+                                                    "rgba(0,0,0,0.4)",
+                                            }}
+                                        >
+                                            Hủy
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                             <div className="comment_edit">
                                 <i
@@ -82,7 +135,10 @@ const ReplyCard = React.memo(
                                 {edit &&
                                     (item?.user?._id?.toString() === userid ? (
                                         <div className="comment_edit_container">
-                                            <div className="comment_edit_items">
+                                            <div
+                                                onClick={handleEditMessage}
+                                                className="comment_edit_items"
+                                            >
                                                 Chỉnh sửa
                                             </div>
                                             <div
@@ -110,9 +166,7 @@ const ReplyCard = React.memo(
                         <div
                             id={`${item?._id + "replies"}`}
                             className="comment_detail_clearly"
-                        >
-                            asdsd
-                        </div>
+                        ></div>
                     </div>
                     <div className="comment_navbar_container">
                         <div className="comment_navbar-like">

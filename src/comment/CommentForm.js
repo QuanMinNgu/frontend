@@ -8,7 +8,7 @@ import { UserContext } from "~/App";
 import CommentCard from "./CommentCard";
 import "./style.css";
 const CommentForm = React.memo(() => {
-    const commentRef = useRef();
+    const [content, setContent] = useState("");
 
     const { socket, checkToken } = useContext(UserContext);
 
@@ -45,7 +45,10 @@ const CommentForm = React.memo(() => {
     }, [slug]);
 
     const handleComment = async () => {
-        if (!commentRef.current?.value) {
+        if (!document.getElementById("commentContent")) {
+            return;
+        }
+        if (!document.getElementById("commentContent").innerHTML) {
             return toast.error("Vui lòng điền thông tin.");
         }
         if (!auth.user?.accessToken) {
@@ -56,14 +59,13 @@ const CommentForm = React.memo(() => {
             socket.emit("comment", {
                 slug,
                 token: da,
-                content: commentRef.current?.value,
+                content: document.getElementById("commentContent").innerHTML,
                 chapter: "",
             });
         }
-        commentRef.current.value = "";
+        document.getElementById("commentContent").innerHTML = "";
+        setContent("");
     };
-
-    const inforRef = useRef();
 
     useEffect(() => {
         if (socket) {
@@ -73,21 +75,25 @@ const CommentForm = React.memo(() => {
                     setComments([...comments]);
                 });
                 socket.on("backRep", (infor) => {
-                    if (inforRef.current !== infor?._id) {
-                        const newArr = comments.map((item) => {
-                            if (
-                                item?._id?.toString() ===
-                                infor?.commentid?.toString()
-                            ) {
+                    const newArr = comments.map((item) => {
+                        if (
+                            item?._id?.toString() ===
+                            infor?.commentid?.toString()
+                        ) {
+                            const check = item?.replies?.some(
+                                (item) =>
+                                    item?._id?.toString() ===
+                                    infor?._id?.toString()
+                            );
+                            if (!check) {
                                 const newObj = { ...infor };
                                 delete newObj["commentid"];
                                 item?.replies?.push({ ...newObj });
                             }
-                            return item;
-                        });
-                        setComments(newArr);
-                    }
-                    inforRef.current = infor?._id;
+                        }
+                        return item;
+                    });
+                    setComments(newArr);
                 });
             }
         }
@@ -99,6 +105,40 @@ const CommentForm = React.memo(() => {
             setUserId(decode.id);
         }
     }, [auth.user?.accessToken]);
+    useEffect(() => {
+        if (socket) {
+            socket.on("updateComment", (infor) => {
+                const newArr = comments?.map((item) => {
+                    if (item?._id?.toString() === infor?.id?.toString()) {
+                        item.content = infor?.content;
+                    }
+                    return item;
+                });
+                setComments(newArr);
+            });
+            socket.on("updateCommentReply", (infor) => {
+                const newArr = comments?.map((item) => {
+                    const replie = item?.replies?.map((de) => {
+                        if (de?._id?.toString() === infor?.id?.toString()) {
+                            de.content = infor?.content;
+                        }
+                        return de;
+                    });
+                    item.replies = replie;
+                    return item;
+                });
+                setComments([...newArr]);
+            });
+            socket.on("deleteMessageReply", (item) => {
+                const dat = comments.filter(
+                    (infor) => infor?._id?.toString() !== item?.id?.toString()
+                );
+
+                console.log(dat);
+                setComments(dat);
+            });
+        }
+    }, [socket, comments]);
 
     return (
         <div className="comment_container">
@@ -119,10 +159,19 @@ const CommentForm = React.memo(() => {
                 </div>
             </div>
             <div className="comment_form">
-                <textarea
-                    ref={commentRef}
-                    placeholder="Nhập bình luận ở đây"
-                ></textarea>
+                <div
+                    onInput={(e) => {
+                        setContent(e.target.innerHTML);
+                    }}
+                    contentEditable="true"
+                    id="commentContent"
+                ></div>
+                <div
+                    style={content ? { display: "none" } : { display: "flex" }}
+                    className="comment_title_input"
+                >
+                    Bình luận tại đây
+                </div>
             </div>
             <div className="comment_items">
                 {comments?.map((item) => (
