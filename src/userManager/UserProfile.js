@@ -240,10 +240,13 @@ const UserProfile = () => {
                                           ))
                                         : user?.reads?.map((item) => (
                                               <div
-                                                  key={item?._id + "mapItem"}
+                                                  key={
+                                                      item?.readId?._id +
+                                                      "mapItemRead"
+                                                  }
                                                   className="col c-6 m-3 l-2-4"
                                               >
-                                                  <Card item={item} />
+                                                  <Card item={item?.readId} />
                                               </div>
                                           ))}
                                 </div>
