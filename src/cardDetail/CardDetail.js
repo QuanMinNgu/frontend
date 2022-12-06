@@ -1,12 +1,12 @@
 import axios from "axios";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "~/App";
 import CommentForm from "~/comment/CommentForm";
 import NotFound from "~/notfound/NotFound";
-import { isFailing, isLoading, isSuccess } from "~/redux/slice/auth";
+import { isFailing, isLoading, isLogin, isSuccess } from "~/redux/slice/auth";
 import "./style.css";
 import moment from "moment";
 import localization from "moment/locale/vi";
@@ -18,7 +18,11 @@ const CardDetail = () => {
 
     const [update, setUpdate] = useState(false);
 
+    const auth = useSelector((state) => state.auth);
+
     const typeUpdateRef = useRef(false);
+
+    const [follow, setFollow] = useState(false);
 
     const { slug } = useParams();
 
@@ -26,11 +30,41 @@ const CardDetail = () => {
 
     const [truyen, setTruyen] = useState("");
 
-    const { socket } = useContext(UserContext);
+    const { socket, checkToken } = useContext(UserContext);
 
     const dispatch = useDispatch();
 
     const ratingRef = useRef(0);
+
+    const handleFollows = async () => {
+        if (auth?.user?.accessToken) {
+            const da = (await checkToken()) || auth?.user?.accessToken;
+            if (socket) {
+                socket.emit("follows", {
+                    token: da,
+                    id: truyen?._id,
+                });
+            }
+        } else {
+        }
+        setFollow(!follow);
+        setUpdate(!update);
+    };
+
+    useEffect(() => {
+        if (socket) {
+            socket.on("BackFollow", (infor) => {
+                const user = { ...auth.user };
+                delete user["follows"];
+                dispatch(
+                    isLogin({
+                        ...user,
+                        follows: infor.follows,
+                    })
+                );
+            });
+        }
+    }, [socket]);
 
     const clipPath = {
         clipPath: `inset(0 ${100 - ratingRef.current * 100}% 0 0)`,
@@ -68,6 +102,15 @@ const CardDetail = () => {
         let here = true;
         const url = `/api/movie/${slug}`;
         if (cache.current[url]) {
+            if (auth?.user?.accessToken) {
+                auth?.user?.follows?.forEach((item) => {
+                    if (
+                        item?.toString() === cache.current[url]?._id?.toString()
+                    ) {
+                        setFollow(true);
+                    }
+                });
+            }
             return setTruyen(cache.current[url]);
         }
         dispatch(isLoading());
@@ -77,6 +120,17 @@ const CardDetail = () => {
                 if (!here) {
                     return;
                 }
+                if (auth?.user?.accessToken) {
+                    auth?.user?.follows?.forEach((item) => {
+                        if (
+                            item?.toString() ===
+                            res?.data?.product?._id?.toString()
+                        ) {
+                            setFollow(true);
+                        }
+                    });
+                }
+                cache.current[url] = res?.data?.product;
                 setTruyen(res?.data?.product);
                 dispatch(isSuccess());
             })
@@ -414,6 +468,7 @@ const CardDetail = () => {
                                     </div>
                                 </Link>
                                 <div
+                                    onClick={handleFollows}
                                     style={{ backgroundColor: "#FF3860" }}
                                     className="card_Detail_button-items"
                                 >
@@ -425,7 +480,7 @@ const CardDetail = () => {
                                         }}
                                         className="fa-solid fa-heart"
                                     ></i>
-                                    Theo dõi
+                                    {follow ? "Đang theo dõi" : "Theo dõi"}
                                 </div>
                                 <div
                                     style={{ backgroundColor: "#56CCF2" }}
