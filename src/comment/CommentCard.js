@@ -91,7 +91,7 @@ const CommentCard = React.memo(({ item, userid, comments, setComments }) => {
         if (item) {
             contenRef.current.innerHTML = item?.content;
         }
-    }, [item]);
+    }, [item?.content]);
 
     return (
         <div className="comment_card_container">
@@ -189,8 +189,10 @@ const CommentCard = React.memo(({ item, userid, comments, setComments }) => {
                     </div>
                     <div style={{ color: "rgba(0,0,0,0.4)" }}>
                         <i>
-                            {item?.createdAt &&
-                                moment(item?.createdAt).fromNow()}
+                            {item?.createdAt !== item?.updatedAt &&
+                                "Đã chỉnh sửa "}
+                            {item?.updatedAt &&
+                                moment(item?.updatedAt).fromNow()}
                         </i>
                     </div>
                 </div>

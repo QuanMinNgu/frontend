@@ -17,6 +17,8 @@ const ReplyCard = React.memo(
 
         const auth = useSelector((state) => state.auth);
 
+        const contentRef = useRef();
+
         const [edit, setEdit] = useState(false);
 
         const { slug } = useParams();
@@ -26,11 +28,9 @@ const ReplyCard = React.memo(
         useEffect(() => {
             if (item) {
                 likeRef.current = item?.likes;
-                document.getElementById(
-                    `${item?._id + "replies"}`
-                ).innerHTML = `${item?.content}`;
+                contentRef.current.innerHTML = `${item?.content}`;
             }
-        }, [item]);
+        }, [item, item?.content]);
 
         const handleDeleteComment = async () => {
             const da = (await checkToken()) || auth.user?.accessToken;
@@ -67,12 +67,8 @@ const ReplyCard = React.memo(
 
         const handleUpdateMessage = async () => {
             setUpdateMessage(false);
-            document.getElementById(
-                `${item?._id + "replies"}`
-            ).contentEditable = false;
-            const detail = document.getElementById(
-                `${item?._id + "replies"}`
-            ).innerHTML;
+            contentRef.current.contentEditable = false;
+            const detail = contentRef.current.innerHTML;
             const da = (await checkToken()) || auth.user?.accessToken;
             if (detail !== item?.content) {
                 if (socket) {
@@ -89,10 +85,8 @@ const ReplyCard = React.memo(
         const handleEditMessage = () => {
             setEdit(false);
             setUpdateMessage(true);
-            document.getElementById(
-                `${item?._id + "replies"}`
-            ).contentEditable = true;
-            document.getElementById(`${item?._id + "replies"}`).focus();
+            contentRef.current.contentEditable = true;
+            contentRef.current.focus();
         };
 
         return (
@@ -164,7 +158,7 @@ const ReplyCard = React.memo(
                             </div>
                         </div>
                         <div
-                            id={`${item?._id + "replies"}`}
+                            ref={contentRef}
                             className="comment_detail_clearly"
                         ></div>
                     </div>
@@ -199,8 +193,10 @@ const ReplyCard = React.memo(
                         </div>
                         <div style={{ color: "rgba(0,0,0,0.4)" }}>
                             <i>
-                                {item?.createdAt &&
-                                    moment(item?.createdAt).fromNow()}
+                                {item?.createdAt !== item?.updatedAt &&
+                                    "Đã chỉnh sửa "}
+                                {item?.updatedAt &&
+                                    moment(item?.updatedAt).fromNow()}
                             </i>
                         </div>
                     </div>
