@@ -32,7 +32,7 @@ const CardDetail = () => {
 
     const [truyen, setTruyen] = useState("");
 
-    const { socket, checkToken } = useContext(UserContext);
+    const { socket, checkToken, cache } = useContext(UserContext);
 
     const dispatch = useDispatch();
 
@@ -99,8 +99,6 @@ const CardDetail = () => {
     }, [currentStar]);
 
     const [check, setCheck] = useState(false);
-
-    const { cache } = useContext(UserContext);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -541,7 +539,9 @@ const CardDetail = () => {
                                                 className={
                                                     reads?.some((item) =>
                                                         item.chapters.includes(
-                                                            `chuong-${index}`
+                                                            `chuong-${
+                                                                index + 1
+                                                            }`
                                                         )
                                                     )
                                                         ? "card_Detail_chapter_items_Links active"

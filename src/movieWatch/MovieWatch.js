@@ -7,7 +7,7 @@ import { UserContext } from "~/App";
 import CommentForm from "~/comment/CommentForm";
 import ScrollTop from "~/components/scroll/ScrollTop";
 import NotFound from "~/notfound/NotFound";
-import { isFailing, isLoading, isSuccess } from "~/redux/slice/auth";
+import { isFailing, isLoading, isLogin, isSuccess } from "~/redux/slice/auth";
 import ImageWatch from "./ImageWatch";
 import "./style.css";
 const MovieWatch = () => {
@@ -122,13 +122,30 @@ const MovieWatch = () => {
     };
 
     useEffect(() => {
-        if (socket) {
-            if (!auth.user?.accessToken) {
-                return;
+        if (truyen) {
+            if (socket) {
+                if (!auth.user?.accessToken) {
+                    return;
+                }
+                getToken();
             }
-            getToken();
         }
-    }, [socket, chapter, slug, auth.user]);
+    }, [socket, chapter, slug, auth.user, truyen]);
+
+    useEffect(() => {
+        if (socket) {
+            socket.on("backReading", (infor) => {
+                const user = { ...auth.user };
+                delete user["reads"];
+                dispatch(
+                    isLogin({
+                        ...user,
+                        reads: infor.reads,
+                    })
+                );
+            });
+        }
+    }, [socket, chapter, slug]);
     return (
         <>
             {check ? (
