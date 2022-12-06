@@ -34,32 +34,13 @@ const ReplyCard = React.memo(
 
         const handleDeleteComment = async () => {
             const da = (await checkToken()) || auth.user?.accessToken;
-            try {
-                const data = await axios.delete(
-                    `/api/message/delete/${parentId?._id}/${item?._id}`,
-                    {
-                        headers: {
-                            token: `Bearer ${da}`,
-                        },
-                    }
-                );
-                toast.success(data?.data?.msg);
-
-                const newArr = comments?.map((detail) => {
-                    if (detail?._id?.toString() === parentId?._id?.toString()) {
-                        detail?.replies?.forEach((infor, index) => {
-                            if (
-                                infor?._id?.toString() === item?._id?.toString()
-                            ) {
-                                detail?.replies?.splice(index, 1);
-                            }
-                        });
-                    }
-                    return detail;
+            if (socket) {
+                socket.emit("deleteReplyComment", {
+                    slug: slug,
+                    token: da,
+                    id: item?._id,
+                    idparent: parentId?._id,
                 });
-                setComments(newArr);
-            } catch (err) {
-                toast.error(err?.response?.data?.msg);
             }
         };
 

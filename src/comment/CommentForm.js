@@ -137,6 +137,22 @@ const CommentForm = React.memo(() => {
                 console.log(dat);
                 setComments(dat);
             });
+            socket.on("deleteReplyBack", (infor) => {
+                const newArr = comments?.map((item) => {
+                    if (item?._id?.toString() === infor?.parentid?.toString()) {
+                        item?.replies?.forEach((detail, index) => {
+                            if (
+                                detail?._id?.toString() ===
+                                infor?.id?.toString()
+                            ) {
+                                item?.replies?.splice(index, 1);
+                            }
+                        });
+                    }
+                    return item;
+                });
+                setComments(newArr);
+            });
         }
     }, [socket, comments]);
 
