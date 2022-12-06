@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { UserContext } from "~/App";
 import CommentCard from "./CommentCard";
 import "./style.css";
-const CommentForm = React.memo(() => {
+const CommentForm = React.memo(({ chapter }) => {
     const [content, setContent] = useState("");
 
     const { socket, checkToken } = useContext(UserContext);
@@ -60,7 +60,7 @@ const CommentForm = React.memo(() => {
                 slug,
                 token: da,
                 content: document.getElementById("commentContent").innerHTML,
-                chapter: "",
+                chapter: chapter || "",
             });
         }
         document.getElementById("commentContent").innerHTML = "";
@@ -134,7 +134,6 @@ const CommentForm = React.memo(() => {
                     (infor) => infor?._id?.toString() !== item?.id?.toString()
                 );
 
-                console.log(dat);
                 setComments(dat);
             });
             socket.on("deleteReplyBack", (infor) => {

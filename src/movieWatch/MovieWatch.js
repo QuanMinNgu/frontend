@@ -231,7 +231,7 @@ const MovieWatch = () => {
                                 )}
                         </div>
                         <div className="movie_watch_comment_container">
-                            <CommentForm />
+                            <CommentForm chapter={chap} />
                         </div>
                     </div>
                     <div className="chapter_next_slice">
