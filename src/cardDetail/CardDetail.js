@@ -20,6 +20,8 @@ const CardDetail = () => {
 
     const auth = useSelector((state) => state.auth);
 
+    const [reads, setReads] = useState([]);
+
     const typeUpdateRef = useRef(false);
 
     const [follow, setFollow] = useState(false);
@@ -50,6 +52,12 @@ const CardDetail = () => {
         setFollow(!follow);
         setUpdate(!update);
     };
+
+    useEffect(() => {
+        if (auth.user?.reads) {
+            setReads(auth.user?.reads);
+        }
+    }, [slug]);
 
     useEffect(() => {
         if (socket) {
@@ -530,7 +538,15 @@ const CardDetail = () => {
                                             className="card_Detail_chapter_items"
                                         >
                                             <Link
-                                                className="card_Detail_chapter_items_Links"
+                                                className={
+                                                    reads?.some((item) =>
+                                                        item.chapters.includes(
+                                                            `chuong-${index}`
+                                                        )
+                                                    )
+                                                        ? "card_Detail_chapter_items_Links active"
+                                                        : "card_Detail_chapter_items_Links"
+                                                }
                                                 to={`/truyen-tranh/${
                                                     truyen?.slug
                                                 }/chuong-${index + 1}`}

@@ -201,3 +201,6 @@
     background-color: white;
     border-radius: 1rem;
 }
+.card_Detail_chapter_items_Links.active{
+    color:#56CCF2;
+}

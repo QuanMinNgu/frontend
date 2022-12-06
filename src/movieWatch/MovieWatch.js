@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "~/App";
@@ -16,13 +16,15 @@ const MovieWatch = () => {
     const [truyen, setTruyen] = useState("");
     const [check, setCheck] = useState(false);
 
+    const auth = useSelector((state) => state.auth);
+
     const dispatch = useDispatch();
 
     const [chap, setChap] = useState(1);
 
     const navigate = useNavigate();
 
-    const { cache, socket } = useContext(UserContext);
+    const { cache, socket, checkToken } = useContext(UserContext);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -109,6 +111,24 @@ const MovieWatch = () => {
             setCheck(true);
         }
     }, [chapter]);
+
+    const getToken = async () => {
+        const da = (await checkToken()) || auth.user?.accessToken;
+        socket.emit("reading", {
+            chapter: chapter,
+            id: truyen?._id,
+            token: da,
+        });
+    };
+
+    useEffect(() => {
+        if (socket) {
+            if (!auth.user?.accessToken) {
+                return;
+            }
+            getToken();
+        }
+    }, [socket, chapter, slug, auth.user]);
     return (
         <>
             {check ? (
