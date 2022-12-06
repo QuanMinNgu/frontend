@@ -115,12 +115,17 @@ const Header = () => {
                                                     <p>Thông tin</p>
                                                 </div>
                                             </Link>
-                                            <div className="auth_container_exist_detail_items">
-                                                <p>Truyện theo dõi</p>
-                                            </div>
-                                            <div className="auth_container_exist_detail_items">
-                                                <p>Truyện đã đọc</p>
-                                            </div>
+                                            <Link
+                                                className="auth_container_exist_detail_items_Links"
+                                                style={{
+                                                    textDecoration: "none",
+                                                }}
+                                                to="/user/manager"
+                                            >
+                                                <div className="auth_container_exist_detail_items">
+                                                    <p>Đổi mật khẩu</p>
+                                                </div>
+                                            </Link>
                                             <div
                                                 onClick={handleSignOut}
                                                 className="auth_container_exist_detail_items"

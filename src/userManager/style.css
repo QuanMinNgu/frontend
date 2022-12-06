@@ -5,6 +5,7 @@
     margin-top: 4rem;
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
 }
 .user_profile{
     width: 70%;
@@ -65,6 +66,7 @@
 @media screen and (max-width:1023px) {
     .user_profile{
         width: 80%;
+        overflow:hidden;
     }
     .user_detail_img{
         width: 100%;
@@ -75,6 +77,7 @@
     .user_detail_small{
         width: 100%;
         text-align: center;
+        text-overflow: ellipsis;
     }
     .dropImage{
         position: absolute;
@@ -105,4 +108,25 @@
 }
 .second_buton{
     margin-left: 0.5rem;
+}
+.user_manager_reading{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 4rem;
+    font-size: 1.8rem;
+}
+.user_linethrough{
+    margin:0 0.5rem;
+}
+.user_manager_reading > span{
+    cursor: pointer;
+}
+.user_manager_reading > span.active{
+    color:#56CCF2;
+    text-decoration: underline;
+}
+.user_card_manager{
+    width: 100%;
+    margin-top: 5rem;
 }
