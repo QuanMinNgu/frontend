@@ -9,7 +9,7 @@ const KindNavHome = ({ name, data }) => {
             </div>
             <div className="row">
                 {data?.data?.Products?.map((item) => (
-                    <div key={item?._id} className="col c-6 m-4 l-2-4">
+                    <div key={item?._id} className="col c-6 m-3 l-2-4">
                         <Card item={item} />
                     </div>
                 ))}

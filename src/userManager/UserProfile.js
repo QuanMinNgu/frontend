@@ -55,7 +55,6 @@ const UserProfile = () => {
                 },
             });
             setUser(data?.data?.user);
-            console.log(data?.data?.user);
         } catch (err) {
             return toast.error(err?.response?.data?.msg);
         }
@@ -216,7 +215,7 @@ const UserProfile = () => {
                                     }}
                                     className={!type ? "active" : ""}
                                 >
-                                    Truyện đã đọc
+                                    Truyện theo dõi
                                 </span>
                                 <span className="user_linethrough">|</span>
                                 <span
@@ -225,32 +224,28 @@ const UserProfile = () => {
                                     }}
                                     className={type ? "active" : ""}
                                 >
-                                    Truyện theo dõi
+                                    Truyện đã đọc
                                 </span>
                             </div>
                             <div className="user_card_manager">
                                 <div className="row">
-                                    <div className="col c-6 m-4 l-2-4">
-                                        <Card />
-                                    </div>
-                                    <div className="col c-6 m-4 l-2-4">
-                                        <Card />
-                                    </div>
-                                    <div className="col c-6 m-4 l-2-4">
-                                        <Card />
-                                    </div>
-                                    <div className="col c-6 m-4 l-2-4">
-                                        <Card />
-                                    </div>
-                                    <div className="col c-6 m-4 l-2-4">
-                                        <Card />
-                                    </div>
-                                    <div className="col c-6 m-4 l-2-4">
-                                        <Card />
-                                    </div>
-                                    <div className="col c-6 m-4 l-2-4">
-                                        <Card />
-                                    </div>
+                                    {!type
+                                        ? user?.follows?.map((item) => (
+                                              <div
+                                                  key={item?._id + "mapItem"}
+                                                  className="col c-6 m-3 l-2-4"
+                                              >
+                                                  <Card item={item} />
+                                              </div>
+                                          ))
+                                        : user?.reads?.map((item) => (
+                                              <div
+                                                  key={item?._id + "mapItem"}
+                                                  className="col c-6 m-3 l-2-4"
+                                              >
+                                                  <Card item={item} />
+                                              </div>
+                                          ))}
                                 </div>
                             </div>
                         </div>
