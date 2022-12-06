@@ -13,7 +13,7 @@ import { UserContext } from "~/App";
 import Reply from "./Reply";
 import ReplyCard from "./ReplyCard";
 import "./style.css";
-const CommentCard = React.memo(({ item, userid, comments, setComments }) => {
+const CommentCard = React.memo(({ item, userid }) => {
     const [reply, setReply] = useState(false);
 
     const [edit, setEdit] = useState(false);
@@ -66,12 +66,18 @@ const CommentCard = React.memo(({ item, userid, comments, setComments }) => {
     const handleEditMessage = () => {
         setEdit(false);
         setUpdateMessage(true);
-        contenRef.current.contentEditable = "true";
+        contenRef.current.contentEditable = true;
         contenRef.current.focus();
     };
 
+    const handleCancelEdit = () => {
+        setEdit(false);
+        setUpdateMessage(false);
+        contenRef.current.contentEditable = false;
+    };
+
     const handleUpdateMessage = async () => {
-        contenRef.current.contentEditable = "false";
+        contenRef.current.contentEditable = false;
         setUpdateMessage(false);
         const da = (await checkToken()) || auth.user?.accessToken;
         const detail = contenRef.current.innerHTML;
@@ -110,9 +116,7 @@ const CommentCard = React.memo(({ item, userid, comments, setComments }) => {
                                         Cập nhật
                                     </button>
                                     <button
-                                        onClick={() => {
-                                            setUpdateMessage(false);
-                                        }}
+                                        onClick={handleCancelEdit}
                                         style={{
                                             backgroundColor: "rgba(0,0,0,0.4)",
                                         }}

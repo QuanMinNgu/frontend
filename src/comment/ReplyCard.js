@@ -67,6 +67,12 @@ const ReplyCard = React.memo(({ item, userid, parentId, chapter }) => {
         contentRef.current.focus();
     };
 
+    const handleCancelEdit = () => {
+        setEdit(false);
+        setUpdateMessage(false);
+        contentRef.current.contentEditable = false;
+    };
+
     return (
         <div className="reply_card_container">
             <div className="comment_card_image">
@@ -84,9 +90,7 @@ const ReplyCard = React.memo(({ item, userid, parentId, chapter }) => {
                                         Cập nhật
                                     </button>
                                     <button
-                                        onClick={() => {
-                                            setUpdateMessage(false);
-                                        }}
+                                        onClick={handleCancelEdit}
                                         style={{
                                             backgroundColor: "rgba(0,0,0,0.4)",
                                         }}

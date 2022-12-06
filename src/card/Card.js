@@ -16,7 +16,7 @@ const Card = ({ item }) => {
     useEffect(() => {
         if (item) {
             ratingRef.current = item?.stars / (item?.reviewers * 5);
-            setUpdate(true);
+            setUpdate(!update);
         }
     }, [item]);
     return (

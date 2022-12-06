@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import "./style.css";
 
 const SwiperCard = ({ item }) => {
     const ratingRef = useRef(0);
 
+    const [update, setUpdate] = useState(false);
     const clipPath = {
         clipPath: `inset(0 ${100 - ratingRef.current * 100}% 0 0)`,
     };
@@ -12,6 +13,7 @@ const SwiperCard = ({ item }) => {
     useEffect(() => {
         if (item) {
             ratingRef.current = item?.stars / (item?.reviewers * 5);
+            setUpdate(!update);
         }
     }, [item]);
     return (
