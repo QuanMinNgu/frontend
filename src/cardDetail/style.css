@@ -191,7 +191,8 @@
 }
 .card_Detail_chapter_items_Links{
     text-decoration: none;
-    color:black;
+    color:#56CCF2;
+    font-weight: 500;
 }
 .card_Detail_chapter_items_Links:hover{
     color:#FF8A08;
@@ -202,5 +203,5 @@
     border-radius: 1rem;
 }
 .card_Detail_chapter_items_Links.active{
-    color:#56CCF2;
+    color:rgba(0,0,0,0.6);
 }
