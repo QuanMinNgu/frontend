@@ -11,12 +11,19 @@ import DefaultLayout from "~/components/defaultLayout/DefaultLayout";
 import Home from "~/homepage/Home";
 import MovieWatch from "~/movieWatch/MovieWatch";
 import Search from "~/searchPage/Search";
+import UserProfile from "~/userManager/UserProfile";
 
 export const publicRouter = [
     { element: Home, path: "/", exact: true, layout: DefaultLayout },
     { element: Login, path: "/login", exact: true },
     { element: Register, path: "/register", exact: true },
     { element: ForgotPassword, path: "/forgot_password", exact: true },
+    {
+        element: UserProfile,
+        path: "/user/manager",
+        exact: true,
+        layout: DefaultLayout,
+    },
     { element: CardDetail, path: "/:slug", layout: DefaultLayout },
     { element: Search, path: "/tim-kiem", layout: DefaultLayout },
     {

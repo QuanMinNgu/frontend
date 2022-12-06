@@ -23,7 +23,6 @@ const Header = () => {
 
     useEffect(() => {
         const apiPoints = ["/api/kind", "/api/country"];
-        let here = true;
         if (cache.current[apiPoints[0]] && cache.current[apiPoints[1]]) {
             setKinds(cache.current[apiPoints[0]]);
             return setCountries(cache.current[apiPoints[1]]);
@@ -50,12 +49,8 @@ const Header = () => {
                 })
             )
             .catch((err) => {
-                console.log(err);
                 dispatch(isFailing());
             });
-        return () => {
-            here = false;
-        };
     }, []);
 
     return (
@@ -114,7 +109,7 @@ const Header = () => {
                                                 style={{
                                                     textDecoration: "none",
                                                 }}
-                                                to="/admin/manager"
+                                                to="/user/manager"
                                             >
                                                 <div className="auth_container_exist_detail_items">
                                                     <p>Thông tin</p>
