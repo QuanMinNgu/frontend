@@ -6,11 +6,16 @@ import { toast } from "react-toastify";
 import { UserContext } from "~/App";
 import { isFailing, isLoading, isLogOut, isSuccess } from "~/redux/slice/auth";
 import KindsNavbar from "../another/KindsNavbar";
+import HeaderSliceA from "./HeaderSliceA";
+import HeaderSliceD from "./HeaderSliceD";
 import "./style.css";
 const Header = () => {
     const { store, cache } = useContext(UserContext);
 
     const auth = useSelector((state) => state.auth);
+
+    const [headerSlice, setHeaderSlice] = useState(false);
+
     const dispatch = useDispatch();
 
     const [kinds, setKinds] = useState([]);
@@ -148,8 +153,21 @@ const Header = () => {
                         </div>
                         <div className="col c-1 m-0 l-0">
                             <div className="mobile_header-bars">
-                                <i className="fa-solid fa-bars mobile_icons"></i>
+                                <i
+                                    onClick={() => {
+                                        setHeaderSlice(true);
+                                    }}
+                                    className="fa-solid fa-bars mobile_icons"
+                                ></i>
                             </div>
+                            <HeaderSliceA
+                                headerSlice={headerSlice}
+                                setHeaderSlice={setHeaderSlice}
+                            />
+                            <HeaderSliceD
+                                headerSlice={headerSlice}
+                                setHeaderSlice={setHeaderSlice}
+                            />
                         </div>
                     </div>
                 </div>
