@@ -16,6 +16,8 @@ const Search = () => {
     const [countries, setCountries] = useState([]);
     const navigate = useNavigate();
 
+    const [updatePS, setUpdatePS] = useState(false);
+
     const countRef = useRef(1);
 
     const sortRef = useRef();
@@ -41,7 +43,7 @@ const Search = () => {
         });
 
         const searching = new URLSearchParams(searchForm).toString();
-
+        setUpdatePS(!updatePS);
         navigate(`?${searching}`);
     };
 
@@ -157,7 +159,11 @@ const Search = () => {
                     )}
                 </div>
             </div>
-            <Paginating />
+            <Paginating
+                updatePS={updatePS}
+                limit={20}
+                count={countRef.current}
+            />
         </div>
     );
 };
