@@ -28,6 +28,9 @@ const CardDetail = () => {
 
     const { slug } = useParams();
 
+    const followRef = useRef(0);
+    const likeRef = useRef(0);
+
     const allStar = Array(5).fill(0);
 
     const [truyen, setTruyen] = useState("");
@@ -70,9 +73,24 @@ const CardDetail = () => {
                         follows: infor.follows,
                     })
                 );
+                if (truyen) {
+                    if (follow) {
+                        if (infor?.num) {
+                            followRef.current = truyen?.follows;
+                        } else {
+                            followRef.current = truyen?.follows - 1;
+                        }
+                    } else {
+                        if (infor?.num) {
+                            followRef.current = truyen?.follows + 1;
+                        } else {
+                            followRef.current = truyen?.follows;
+                        }
+                    }
+                }
             });
         }
-    }, [socket]);
+    }, [socket, truyen]);
 
     const clipPath = {
         clipPath: `inset(0 ${100 - ratingRef.current * 100}% 0 0)`,
@@ -117,6 +135,7 @@ const CardDetail = () => {
                     }
                 });
             }
+            followRef.current = cache.current[url]?.follows;
             return setTruyen(cache.current[url]);
         }
         dispatch(isLoading());
@@ -137,6 +156,7 @@ const CardDetail = () => {
                     });
                 }
                 cache.current[url] = res?.data?.product;
+                followRef.current = cache.current[url]?.follows;
                 setTruyen(res?.data?.product);
                 dispatch(isSuccess());
             })
@@ -234,7 +254,7 @@ const CardDetail = () => {
                                                 ></i>
                                                 Lượt theo dõi:
                                             </div>{" "}
-                                            {truyen?.follows}
+                                            {followRef.current}
                                         </li>
                                         <li>
                                             <div>
