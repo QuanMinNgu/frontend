@@ -161,6 +161,8 @@ const Header = () => {
                                 ></i>
                             </div>
                             <HeaderSliceA
+                                kinds={kinds}
+                                countries={countries}
                                 headerSlice={headerSlice}
                                 setHeaderSlice={setHeaderSlice}
                             />

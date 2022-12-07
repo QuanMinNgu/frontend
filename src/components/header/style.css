@@ -272,9 +272,10 @@
 }
 .header_slice_wrap{
     width: 100%;
-    min-height: 100vh;
+    height: 100vh;
     overflow-x: hidden;
     overflow-y: scroll;
+    padding-bottom: 1rem;
     background-color: white;
     box-shadow: 0 0 1rem 0.5rem rgba(0,0,0,0.7);
     font-family: 'Noto Sans', sans-serif;
@@ -305,7 +306,7 @@
     width: 100%;
     justify-content: space-between;
     padding:0 0.5rem;
-    margin-left: 2rem;
+    margin-left: 1.5rem;
     height: 5rem;
     border-top: 0.1rem solid rgba(0,0,0,0.1);
     align-items: center;

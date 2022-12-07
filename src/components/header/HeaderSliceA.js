@@ -4,10 +4,14 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { isLogOut } from "~/redux/slice/auth";
 import "./style.css";
-const HeaderSliceA = ({ headerSlice, setHeaderSlice }) => {
+const HeaderSliceA = ({ headerSlice, setHeaderSlice, kinds, countries }) => {
     const auth = useSelector((state) => state.auth);
 
     const [child, setChild] = useState(false);
+
+    const [kindChild, setkindChild] = useState(false);
+
+    const [countryChild, setCountryChild] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -38,9 +42,9 @@ const HeaderSliceA = ({ headerSlice, setHeaderSlice }) => {
                             className="header_slice_auth_exist"
                         >
                             <div className="header_slice_auth_detail">
-                                <img src="https://thuthuatnhanh.com/wp-content/uploads/2020/01/background-dep.jpg" />
+                                <img src={auth.user?.image} />
                                 <div className="header_slice_auth_detail_name">
-                                    <p>Quang Nguyen Minh Dep Zai</p>
+                                    <p>{auth.user?.name}</p>
                                 </div>
                             </div>
                             <div className="header_slice_angle_down">
@@ -130,7 +134,10 @@ const HeaderSliceA = ({ headerSlice, setHeaderSlice }) => {
                 )}
                 <div className="header_slice_auth">
                     <div className="header_slice_auth_exist">
-                        <Link className="header_slice_link" to="/login">
+                        <Link
+                            className="header_slice_link"
+                            to="/tim-kiem?sort=-watchs"
+                        >
                             <div
                                 onClick={() => {
                                     setHeaderSlice(false);
@@ -142,7 +149,7 @@ const HeaderSliceA = ({ headerSlice, setHeaderSlice }) => {
                         </Link>
                     </div>
                     <div className="header_slice_auth_exist">
-                        <Link className="header_slice_link" to="/login">
+                        <Link className="header_slice_link" to="/tim-kiem">
                             <div
                                 onClick={() => {
                                     setHeaderSlice(false);
@@ -153,6 +160,90 @@ const HeaderSliceA = ({ headerSlice, setHeaderSlice }) => {
                             </div>
                         </Link>
                     </div>
+                </div>
+                <div className="header_slice_auth">
+                    <div
+                        onClick={() => {
+                            setkindChild(!kindChild);
+                        }}
+                        className="header_slice_auth_exist"
+                    >
+                        <div className="header_slice_auth_detail">
+                            <div className="header_slice_auth_detail_name">
+                                <p>Thể loại</p>
+                            </div>
+                        </div>
+                        <div className="header_slice_angle_down">
+                            {child ? (
+                                <i className="fa-solid fa-angle-up"></i>
+                            ) : (
+                                <i className="fa-solid fa-angle-down"></i>
+                            )}
+                        </div>
+                    </div>
+                    {kindChild &&
+                        kinds?.map((item) => (
+                            <div
+                                key={item?._id + "kindsHere"}
+                                className="header_slice_auth_exist_child"
+                            >
+                                <Link
+                                    className="header_slice_link"
+                                    to={`/tim-kiem?kind=${item?.slug}`}
+                                >
+                                    <div
+                                        onClick={() => {
+                                            setHeaderSlice(false);
+                                        }}
+                                        className="header_slice_auth_items_child"
+                                    >
+                                        {item?.name}
+                                    </div>
+                                </Link>
+                            </div>
+                        ))}
+                </div>
+                <div className="header_slice_auth">
+                    <div
+                        onClick={() => {
+                            setCountryChild(!countryChild);
+                        }}
+                        className="header_slice_auth_exist"
+                    >
+                        <div className="header_slice_auth_detail">
+                            <div className="header_slice_auth_detail_name">
+                                <p>Quốc gia</p>
+                            </div>
+                        </div>
+                        <div className="header_slice_angle_down">
+                            {child ? (
+                                <i className="fa-solid fa-angle-up"></i>
+                            ) : (
+                                <i className="fa-solid fa-angle-down"></i>
+                            )}
+                        </div>
+                    </div>
+                    {countryChild &&
+                        countries?.map((item) => (
+                            <div
+                                key={item?._id + "countriesHere"}
+                                className="header_slice_auth_exist_child"
+                            >
+                                <Link
+                                    className="header_slice_link"
+                                    to={`/tim-kiem?country=${item?.slug}`}
+                                >
+                                    <div
+                                        onClick={() => {
+                                            setHeaderSlice(false);
+                                        }}
+                                        className="header_slice_auth_items_child"
+                                    >
+                                        {item?.name}
+                                    </div>
+                                </Link>
+                            </div>
+                        ))}
                 </div>
             </div>
         </div>
