@@ -120,7 +120,7 @@ const Header = () => {
                                                 style={{
                                                     textDecoration: "none",
                                                 }}
-                                                to="/user/manager"
+                                                to="/auth/change_password"
                                             >
                                                 <div className="auth_container_exist_detail_items">
                                                     <p>Đổi mật khẩu</p>

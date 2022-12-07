@@ -3,6 +3,8 @@ import Chapter from "~/admin/Chapter";
 import Create from "~/admin/Create";
 import Update from "~/admin/Update";
 import ActiveAccount from "~/auth/ActiveAccount";
+import ActiveForgotPassword from "~/auth/ActiveForgotPassword";
+import ChangePassword from "~/auth/ChangePassword";
 import ForgotPassword from "~/auth/ForgotPassword";
 import Login from "~/auth/Login";
 import Register from "~/auth/Register";
@@ -23,6 +25,16 @@ export const publicRouter = [
         path: "/user/manager",
         exact: true,
         layout: DefaultLayout,
+    },
+    {
+        element: ChangePassword,
+        path: "/auth/change_password",
+        exact: true,
+    },
+    {
+        element: ActiveForgotPassword,
+        path: "/auth/forgot/:slug",
+        exact: true,
     },
     { element: CardDetail, path: "/:slug", layout: DefaultLayout },
     { element: Search, path: "/tim-kiem", layout: DefaultLayout },
