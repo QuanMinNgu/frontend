@@ -85,18 +85,20 @@ const HeaderSliceA = ({ headerSlice, setHeaderSlice }) => {
                                 </Link>
                             </div>
                         )}
-                        <div className="header_slice_auth_exist">
-                            <div
-                                onClick={() => {
-                                    dispatch(isLogOut());
-                                    setHeaderSlice(false);
-                                    toast.success("Đăng xuất thành công.");
-                                }}
-                                className="header_slice_auth_items"
-                            >
-                                Đăng xuất
+                        {child && (
+                            <div className="header_slice_auth_exist_child">
+                                <div
+                                    onClick={() => {
+                                        dispatch(isLogOut());
+                                        setHeaderSlice(false);
+                                        toast.success("Đăng xuất thành công.");
+                                    }}
+                                    className="header_slice_auth_items_child"
+                                >
+                                    Đăng xuất
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 ) : (
                     <div className="header_slice_auth">
@@ -126,6 +128,32 @@ const HeaderSliceA = ({ headerSlice, setHeaderSlice }) => {
                         </div>
                     </div>
                 )}
+                <div className="header_slice_auth">
+                    <div className="header_slice_auth_exist">
+                        <Link className="header_slice_link" to="/login">
+                            <div
+                                onClick={() => {
+                                    setHeaderSlice(false);
+                                }}
+                                className="header_slice_auth_items"
+                            >
+                                Truyện Top
+                            </div>
+                        </Link>
+                    </div>
+                    <div className="header_slice_auth_exist">
+                        <Link className="header_slice_link" to="/login">
+                            <div
+                                onClick={() => {
+                                    setHeaderSlice(false);
+                                }}
+                                className="header_slice_auth_items"
+                            >
+                                Truyện mới nhất
+                            </div>
+                        </Link>
+                    </div>
+                </div>
             </div>
         </div>
     );

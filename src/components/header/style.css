@@ -249,12 +249,12 @@
     z-index: 100;
 }
 .header_slice_container_a{
-    animation: appearing ease 0.5s forwards;
+    animation: happearing ease 0.5s forwards;
 }
 .header_slice_container_d{
-    animation: disappearing ease 0.5s forwards;
+    animation: hdisappearing ease 0.5s forwards;
 }
-@keyframes appearing{
+@keyframes happearing{
     0%{
         transform: translateX(100%);
     }
@@ -262,7 +262,7 @@
         transform: translateX(0%);
     }
 }
-@keyframes disappearing{
+@keyframes hdisappearing{
     0%{
         transform: translateX(0%);
     }
@@ -405,4 +405,7 @@
     100%{
         transform: translateX(-100%);
     }
+}
+.header_slice_auth_items:hover{
+    background-color: rgba(0,0,0,0.1);
 }
