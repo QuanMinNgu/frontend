@@ -5,6 +5,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "~/App";
 import Card from "~/card/Card";
+import Paginating from "~/paginating/Paginating";
 import { isFailing, isLoading, isSuccess } from "~/redux/slice/auth";
 import "./style.css";
 const Search = () => {
@@ -13,7 +14,6 @@ const Search = () => {
     const dispatch = useDispatch();
     const [kinds, setKinds] = useState([]);
     const [countries, setCountries] = useState([]);
-    const [updatePS, setUpdatePC] = useState(false);
     const navigate = useNavigate();
 
     const countRef = useRef(1);
@@ -21,21 +21,19 @@ const Search = () => {
     const sortRef = useRef();
     const kindRef = useRef();
     const countryRef = useRef();
-    const typeRef = useRef();
 
     const { cache } = useContext(UserContext);
 
     const handleSearching = () => {
         const searchingI = new URLSearchParams(search).get("searching") || "";
         const searchForm = {
-            sort: sortRef.current.value,
-            kind: kindRef.current.value,
-            country: countryRef.current.value,
-            type: typeRef.current.value,
+            sort: sortRef.current?.value,
+            kind: kindRef.current?.value,
+            country: countryRef.current?.value,
             searching: searchingI,
         };
 
-        const excludesFields = ["sort", "kind", "country", "type", "searching"];
+        const excludesFields = ["sort", "kind", "country", "searching"];
         excludesFields.forEach((item) => {
             if (!searchForm[item]) {
                 delete searchForm[item];
@@ -43,7 +41,7 @@ const Search = () => {
         });
 
         const searching = new URLSearchParams(searchForm).toString();
-        setUpdatePC(!updatePS);
+
         navigate(`?${searching}`);
     };
 
@@ -64,7 +62,9 @@ const Search = () => {
     }, [cache.current["/api/kind"], cache.current["/api/country"]]);
 
     useEffect(() => {
-        const url = search ? `/api/movie${search}&limit=20` : `/movie?limit=20`;
+        const url = search
+            ? `/api/movie${search}&limit=20`
+            : `/api/movie?limit=20`;
         if (cache.current[url]) {
             setMovies(cache.current[url]);
             countRef.current = cache.current[url]?.count;
@@ -101,8 +101,8 @@ const Search = () => {
                     >
                         <option value="">Truyện mới</option>
                         <option value="createdAt">Truyện cũ</option>
-                        <option value="-watching">Xem nhiều nhất</option>
-                        <option value="watching">Xem ít nhất</option>
+                        <option value="-watchs">Xem nhiều nhất</option>
+                        <option value="watchs">Xem ít nhất</option>
                     </select>
                     <select
                         ref={kindRef}
@@ -157,6 +157,7 @@ const Search = () => {
                     )}
                 </div>
             </div>
+            <Paginating />
         </div>
     );
 };
