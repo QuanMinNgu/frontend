@@ -29,7 +29,10 @@ const CardDetail = () => {
     const { slug } = useParams();
 
     const followRef = useRef(0);
+
     const likeRef = useRef(0);
+
+    const [like, setLike] = useState(0);
 
     const allStar = Array(5).fill(0);
 
@@ -62,6 +65,17 @@ const CardDetail = () => {
         }
     }, [slug]);
 
+    const handleLikeMovie = async () => {
+        const da = (await checkToken()) || auth?.user?.accessToken;
+        if (socket) {
+            socket.emit("liking", {
+                slug: slug,
+                token: da,
+                id: truyen?._id,
+            });
+        }
+    };
+
     useEffect(() => {
         if (socket) {
             socket.on("BackFollow", (infor) => {
@@ -87,6 +101,16 @@ const CardDetail = () => {
                             followRef.current = truyen?.follows;
                         }
                     }
+                }
+            });
+            socket.on("backLiking", (infor) => {
+                if (truyen) {
+                    if (infor?.num) {
+                        likeRef.current++;
+                    } else {
+                        likeRef.current--;
+                    }
+                    setLike(likeRef.current);
                 }
             });
         }
@@ -123,6 +147,10 @@ const CardDetail = () => {
     }, [slug]);
 
     useEffect(() => {
+        likeRef.current = like;
+    }, [like]);
+
+    useEffect(() => {
         let here = true;
         const url = `/api/movie/${slug}`;
         if (cache.current[url]) {
@@ -136,6 +164,7 @@ const CardDetail = () => {
                 });
             }
             followRef.current = cache.current[url]?.follows;
+            setLike(cache.current[url]?.likes);
             return setTruyen(cache.current[url]);
         }
         dispatch(isLoading());
@@ -157,6 +186,7 @@ const CardDetail = () => {
                 }
                 cache.current[url] = res?.data?.product;
                 followRef.current = cache.current[url]?.follows;
+                setLike(cache.current[url]?.likes);
                 setTruyen(res?.data?.product);
                 dispatch(isSuccess());
             })
@@ -266,7 +296,7 @@ const CardDetail = () => {
                                                 ></i>
                                                 Lượt thích:
                                             </div>{" "}
-                                            {truyen?.likes}
+                                            {like}
                                         </li>
                                         <li>
                                             <div>
@@ -509,6 +539,7 @@ const CardDetail = () => {
                                     {follow ? "Đang theo dõi" : "Theo dõi"}
                                 </div>
                                 <div
+                                    onClick={handleLikeMovie}
                                     style={{ backgroundColor: "#56CCF2" }}
                                     className="card_Detail_button-items"
                                 >
