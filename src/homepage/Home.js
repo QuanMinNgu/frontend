@@ -21,9 +21,9 @@ const Home = () => {
     useEffect(() => {
         let endpoints = [
             "/api/movie?limit=10",
-            "/api/movie?sort=-watchs&limit=8",
-            "/api/movie?sort=-follows&limit=8",
-            "/api/movie?sort=likes&limit=8",
+            "/api/movie?sort=-watchs&limit=10",
+            "/api/movie?sort=-follows&limit=10",
+            "/api/movie?sort=likes&limit=10",
         ];
         let here = true;
         if (cache.current["all"]) {

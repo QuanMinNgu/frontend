@@ -32,7 +32,7 @@ const MovieWatch = () => {
 
     useEffect(() => {
         const timeOut = setTimeout(() => {
-            if (slug) {
+            if (truyen) {
                 if (socket) {
                     socket.emit("watching", {
                         id: truyen?._id,
@@ -43,7 +43,7 @@ const MovieWatch = () => {
         return () => {
             clearTimeout(timeOut);
         };
-    }, [slug, chapter]);
+    }, [truyen, socket, chapter]);
 
     useEffect(() => {
         let here = 1;
@@ -133,19 +133,23 @@ const MovieWatch = () => {
     }, [socket, chapter, slug, auth.user, truyen]);
 
     useEffect(() => {
-        if (socket) {
-            socket.on("backReading", (infor) => {
-                const user = { ...auth.user };
-                delete user["reads"];
-                dispatch(
-                    isLogin({
-                        ...user,
-                        reads: infor.reads,
-                    })
-                );
-            });
+        if (truyen) {
+            if (socket) {
+                socket.on("backReading", (infor) => {
+                    const user = { ...auth.user };
+                    delete user["reads"];
+                    if (auth.user) {
+                        dispatch(
+                            isLogin({
+                                ...user,
+                                reads: infor.reads,
+                            })
+                        );
+                    }
+                });
+            }
         }
-    }, [socket, chapter, slug]);
+    }, [socket, chapter, truyen]);
     return (
         <>
             {check ? (
