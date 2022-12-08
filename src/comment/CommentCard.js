@@ -9,6 +9,7 @@ import React, {
 } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import { UserContext } from "~/App";
 import Reply from "./Reply";
 import ReplyCard from "./ReplyCard";
@@ -99,6 +100,24 @@ const CommentCard = React.memo(({ item, userid }) => {
         }
     }, [item?.content]);
 
+    const handleDeleteAdmin = async () => {
+        const da = (await checkToken()) || auth.user?.accessToken;
+        try {
+            const data = await axios.delete(
+                `/api/message/delete/admin/${item?._id}`,
+                {
+                    headers: {
+                        token: `Bearer ${da}`,
+                    },
+                }
+            );
+            toast.success(data?.data?.msg);
+            setEdit(!edit);
+        } catch (err) {
+            return toast.error(err?.response?.data?.msg);
+        }
+    };
+
     return (
         <div className="comment_card_container">
             <div className="comment_card_image">
@@ -152,7 +171,10 @@ const CommentCard = React.memo(({ item, userid }) => {
                                     </div>
                                 ) : store?.rule === "admin" ? (
                                     <div className="comment_edit_container">
-                                        <div className="comment_edit_items">
+                                        <div
+                                            onClick={handleDeleteAdmin}
+                                            className="comment_edit_items"
+                                        >
                                             Xóa
                                         </div>
                                     </div>
