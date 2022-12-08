@@ -118,6 +118,20 @@ const CommentCard = React.memo(({ item, userid }) => {
         }
     };
 
+    const handleReport = async () => {
+        const da = (await checkToken()) || auth.user?.accessToken;
+        if (socket) {
+            socket.emit("reports", {
+                slug: slug,
+                to: item,
+            });
+            toast.success(
+                "Cảm ơn bạn đã báo cáo, chúng tôi sẽ xem xét lại bình luận này."
+            );
+            setEdit(!edit);
+        }
+    };
+
     return (
         <div className="comment_card_container">
             <div className="comment_card_image">
@@ -180,7 +194,10 @@ const CommentCard = React.memo(({ item, userid }) => {
                                     </div>
                                 ) : (
                                     <div className="comment_edit_container">
-                                        <div className="comment_edit_items">
+                                        <div
+                                            onClick={handleReport}
+                                            className="comment_edit_items"
+                                        >
                                             Báo cáo
                                         </div>
                                     </div>

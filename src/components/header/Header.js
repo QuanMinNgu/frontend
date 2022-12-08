@@ -109,6 +109,18 @@ const Header = () => {
                                                     </div>
                                                 </Link>
                                             )}
+                                            {store.rule === "admin" && (
+                                                <Link
+                                                    style={{
+                                                        textDecoration: "none",
+                                                    }}
+                                                    to="/report/manager"
+                                                >
+                                                    <div className="auth_container_exist_detail_items">
+                                                        <p>Report</p>
+                                                    </div>
+                                                </Link>
+                                            )}
                                             <Link
                                                 className="auth_container_exist_detail_items_Links"
                                                 style={{

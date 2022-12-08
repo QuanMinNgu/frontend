@@ -1,6 +1,7 @@
 import AdminHome from "~/admin/AdminHome";
 import Chapter from "~/admin/Chapter";
 import Create from "~/admin/Create";
+import ReportManager from "~/admin/ReportManager";
 import Update from "~/admin/Update";
 import ActiveAccount from "~/auth/ActiveAccount";
 import ActiveForgotPassword from "~/auth/ActiveForgotPassword";
@@ -54,6 +55,12 @@ export const privateRouter = [
     {
         element: AdminHome,
         path: "/admin/manager",
+        exact: true,
+        layout: DefaultLayout,
+    },
+    {
+        element: ReportManager,
+        path: "/report/manager",
         exact: true,
         layout: DefaultLayout,
     },
