@@ -1,13 +1,16 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { UserContext } from "~/App";
+import { isFailing, isLoading, isSuccess } from "~/redux/slice/auth";
 import ReportCard from "./ReportCard";
 import "./style.css";
 const ReportManager = () => {
     const [reports, setReports] = useState({});
 
     const auth = useSelector((state) => state.auth);
+
+    const dispath = useDispatch();
 
     const { cache } = useContext(UserContext);
 
@@ -17,6 +20,7 @@ const ReportManager = () => {
         if (cache.current[url]) {
             return setReports(cache.current[url]);
         }
+        dispath(isLoading());
         axios
             .get(url, {
                 headers: {
@@ -24,12 +28,15 @@ const ReportManager = () => {
                 },
             })
             .then((res) => {
+                dispath(isSuccess());
                 if (!here) {
                     return;
                 }
                 setReports(res?.data);
-                console.log(res?.data);
                 cache.current[url] = res?.data;
+            })
+            .catch((err) => {
+                dispath(isFailing());
             });
         return () => {
             here = false;
