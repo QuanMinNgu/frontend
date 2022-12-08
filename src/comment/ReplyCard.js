@@ -1,8 +1,11 @@
+import axios from "axios";
 import moment from "moment";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import { UserContext } from "~/App";
+import { isFailing, isLoading, isSuccess } from "~/redux/slice/auth";
 import Reply from "./Reply";
 import "./style.css";
 const ReplyCard = React.memo(({ item, userid, parentId, chapter }) => {
@@ -73,6 +76,41 @@ const ReplyCard = React.memo(({ item, userid, parentId, chapter }) => {
         contentRef.current.contentEditable = false;
     };
 
+    const dispatch = useDispatch();
+    const handleDeleteAdmin = async () => {
+        const da = (await checkToken()) || auth.user?.accessToken;
+        dispatch(isLoading());
+        try {
+            const data = await axios.delete(
+                `/api/message/delete/admin/${item?._id}`,
+                {
+                    headers: {
+                        token: `Bearer ${da}`,
+                    },
+                }
+            );
+            dispatch(isSuccess());
+            toast.success(data?.data?.msg);
+            setEdit(!edit);
+        } catch (err) {
+            dispatch(isFailing());
+            return toast.error(err?.response?.data?.msg);
+        }
+    };
+    const handleReport = async () => {
+        const da = (await checkToken()) || auth.user?.accessToken;
+        if (socket) {
+            socket.emit("reports", {
+                slug: slug,
+                to: item,
+            });
+            toast.success(
+                "Cảm ơn bạn đã báo cáo, chúng tôi sẽ xem xét lại bình luận này."
+            );
+            setEdit(!edit);
+        }
+    };
+
     return (
         <div className="reply_card_container">
             <div className="comment_card_image">
@@ -126,13 +164,19 @@ const ReplyCard = React.memo(({ item, userid, parentId, chapter }) => {
                                     </div>
                                 ) : store?.rule === "admin" ? (
                                     <div className="comment_edit_container">
-                                        <div className="comment_edit_items">
+                                        <div
+                                            onClick={handleDeleteAdmin}
+                                            className="comment_edit_items"
+                                        >
                                             Xóa
                                         </div>
                                     </div>
                                 ) : (
                                     <div className="comment_edit_container">
-                                        <div className="comment_edit_items">
+                                        <div
+                                            onClick={handleReport}
+                                            className="comment_edit_items"
+                                        >
                                             Báo cáo
                                         </div>
                                     </div>
