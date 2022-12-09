@@ -214,6 +214,26 @@ const Header = () => {
                                     <li>
                                         <Link
                                             className="navbar_items"
+                                            to="/user/truyen-da-doc"
+                                        >
+                                            <div className="navbar_item-infor">
+                                                Truyện Đã Đọc
+                                            </div>
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link
+                                            className="navbar_items"
+                                            to="/user/truyen-theo-doi"
+                                        >
+                                            <div className="navbar_item-infor">
+                                                Truyện Theo Dõi
+                                            </div>
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link
+                                            className="navbar_items"
                                             to="/tim-kiem?sort=-watchs"
                                         >
                                             <div className="navbar_item-infor">

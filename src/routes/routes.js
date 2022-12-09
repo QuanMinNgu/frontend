@@ -16,6 +16,8 @@ import Home from "~/homepage/Home";
 import MovieWatch from "~/movieWatch/MovieWatch";
 import Search from "~/searchPage/Search";
 import UserProfile from "~/userManager/UserProfile";
+import UserFollow from "~/userRead/UserFollow";
+import UserRead from "~/userRead/UserRead";
 
 export const publicRouter = [
     { element: Home, path: "/", exact: true, layout: DefaultLayout },
@@ -25,6 +27,18 @@ export const publicRouter = [
     {
         element: UserProfile,
         path: "/user/manager",
+        exact: true,
+        layout: DefaultLayout,
+    },
+    {
+        element: UserRead,
+        path: "/user/truyen-da-doc",
+        exact: true,
+        layout: DefaultLayout,
+    },
+    {
+        element: UserFollow,
+        path: "/user/truyen-theo-doi",
         exact: true,
         layout: DefaultLayout,
     },

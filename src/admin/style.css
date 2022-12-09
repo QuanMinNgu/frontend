@@ -593,6 +593,7 @@
 }
 .admin_user_manager_wrap{
     margin-top: 5rem;
+    min-height: 100vh;
 }
 .admin_user_manager_title{
     text-align: center;
