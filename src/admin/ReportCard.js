@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { UserContext } from "~/App";
 import { isFailing, isLoading, isSuccess } from "~/redux/slice/auth";
 import "./style.css";
-const ReportCard = ({ item }) => {
+const ReportCard = ({ item, update, setUpdate }) => {
     const contentRef = useRef();
 
     const dispatch = useDispatch();
@@ -59,6 +59,7 @@ const ReportCard = ({ item }) => {
                 );
                 dispatch(isSuccess());
                 toast.success(data?.data?.msg);
+                setUpdate(!update);
             } catch (err) {
                 dispatch(isFailing());
                 toast.error(err?.response?.data?.msg);

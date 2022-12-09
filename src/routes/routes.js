@@ -1,4 +1,5 @@
 import AdminHome from "~/admin/AdminHome";
+import AdminUserMa from "~/admin/AdminUserMa";
 import Chapter from "~/admin/Chapter";
 import Create from "~/admin/Create";
 import ReportManager from "~/admin/ReportManager";
@@ -61,6 +62,12 @@ export const privateRouter = [
     {
         element: ReportManager,
         path: "/report/manager",
+        exact: true,
+        layout: DefaultLayout,
+    },
+    {
+        element: AdminUserMa,
+        path: "/admin/user/manager",
         exact: true,
         layout: DefaultLayout,
     },

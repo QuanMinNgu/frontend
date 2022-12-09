@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import { UserContext } from "~/App";
 import { isFailing, isLoading, isSuccess } from "~/redux/slice/auth";
 import ReportCard from "./ReportCard";
@@ -12,14 +13,13 @@ const ReportManager = () => {
 
     const dispath = useDispatch();
 
+    const [update, setUpdate] = useState(false);
+
     const { cache } = useContext(UserContext);
 
     useEffect(() => {
         let here = true;
         const url = "/api/report";
-        if (cache.current[url]) {
-            return setReports(cache.current[url]);
-        }
         dispath(isLoading());
         axios
             .get(url, {
@@ -33,15 +33,18 @@ const ReportManager = () => {
                     return;
                 }
                 setReports(res?.data);
-                cache.current[url] = res?.data;
             })
             .catch((err) => {
                 dispath(isFailing());
+                if (!here) {
+                    return;
+                }
+                toast.error(err?.response?.data?.msg);
             });
         return () => {
             here = false;
         };
-    }, []);
+    }, [update]);
 
     return (
         <div className="report_container">
@@ -53,6 +56,8 @@ const ReportManager = () => {
                     <div className="report_card_container">
                         {reports?.reports?.map((item) => (
                             <ReportCard
+                                update={update}
+                                setUpdate={setUpdate}
                                 item={item}
                                 key={item?._id + "report"}
                             />
