@@ -11,6 +11,7 @@ import "./style.css";
 import moment from "moment";
 import localization from "moment/locale/vi";
 import localStorage from "redux-persist/es/storage";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 const CardDetail = () => {
     moment.locale("vi", localization);
     const [currentStar, setCurrentStar] = useState(null);
@@ -314,6 +315,31 @@ const CardDetail = () => {
                 <NotFound />
             ) : (
                 <div className="cardDetail_container">
+                    <HelmetProvider>
+                        <Helmet>
+                            <title>
+                                {truyen
+                                    ? truyen?.title !== undefined
+                                        ? truyen?.title
+                                        : "Truyện Tranh Hay"
+                                    : "Truyện Tranh Hay"}
+                            </title>
+                            <link
+                                rel="canonical"
+                                href={`https://stphim.xyz/${slug}`}
+                            />
+                            <meta
+                                property="o:description"
+                                content={
+                                    truyen
+                                        ? truyen?.content !== undefined
+                                            ? truyen?.content
+                                            : "Sttruyen là web đọc truyện mọi thể loại."
+                                        : "Sttruyen là web đọc truyện mọi thể loại."
+                                }
+                            />
+                        </Helmet>
+                    </HelmetProvider>
                     <div className="grid wideS">
                         <div className="card_Detail_wrap">
                             <div className="card_Detail_navbar_container">

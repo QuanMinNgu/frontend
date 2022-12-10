@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useContext, useEffect, useRef, useState } from "react";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useDispatch } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -94,6 +95,16 @@ const Search = () => {
 
     return (
         <div className="search_container">
+            <HelmetProvider>
+                <Helmet>
+                    <title>Tìm Kiếm Phim</title>
+                    <link rel="canonical" href="https//stphim.xyz/tim-kiem" />
+                    <meta
+                        property="o:description"
+                        content="Stphim là web đọc truyện mọi thể loại, chúng tôi hy vọng rằng bạn sẽ có 1 buổi đọc truyện thật tuyệt vời."
+                    />
+                </Helmet>
+            </HelmetProvider>
             <div className="grid wideS">
                 <div className="search_filter_container">
                     <select

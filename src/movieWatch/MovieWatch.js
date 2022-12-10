@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -212,6 +213,31 @@ const MovieWatch = () => {
                 <NotFound />
             ) : (
                 <div className="movie_watch_container">
+                    <HelmetProvider>
+                        <Helmet>
+                            <title>
+                                {truyen
+                                    ? truyen?.title !== undefined
+                                        ? `${truyen?.title} Chương ${chap}`
+                                        : "Truyện Tranh Hay"
+                                    : "Truyện Tranh Hay"}
+                            </title>
+                            <link
+                                rel="canonical"
+                                href={`https://sttruyen.xyz/${slug}/${chapter}`}
+                            />
+                            <meta
+                                property="o:description"
+                                content={
+                                    truyen
+                                        ? truyen?.content
+                                            ? truyen?.content
+                                            : "Sttruyen là web đọc truyện mọi thể loại."
+                                        : "Sttruyen là web đọc truyện mọi thể loại."
+                                }
+                            />
+                        </Helmet>
+                    </HelmetProvider>
                     <div className="grid wideS">
                         <div className="movie_watch_title">
                             <div className="card_Detail_navbar_container">

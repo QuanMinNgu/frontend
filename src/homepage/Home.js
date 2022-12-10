@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useDispatch } from "react-redux";
 import { UserContext } from "~/App";
 import { isFailing, isLoading, isSuccess } from "~/redux/slice/auth";
@@ -64,6 +65,16 @@ const Home = () => {
 
     return (
         <div className="home_container">
+            <HelmetProvider>
+                <Helmet>
+                    <title>Thế Giới Truyện</title>
+                    <link rel="canonical" href="https//stphim.xyz" />
+                    <meta
+                        property="o:description"
+                        content="Stphim là web đọc truyện mọi thể loại, chúng tôi hy vọng rằng bạn sẽ có 1 buổi đọc truyện thật tuyệt vời."
+                    />
+                </Helmet>
+            </HelmetProvider>
             <div className="grid wideS">
                 <div className="home_wrap">
                     <div className="home_top_container">
