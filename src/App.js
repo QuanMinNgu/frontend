@@ -27,7 +27,7 @@ function App() {
     const [socket, setSocket] = useState("");
 
     useEffect(() => {
-        const socket = io("http://stphim.xyz:5000/");
+        const socket = io("http://localhost:5000");
         setSocket(socket);
         return () => {
             socket.close();
@@ -73,7 +73,9 @@ function App() {
     }, [auth.user?.accessToken]);
 
     useEffect(() => {
-        checkToken();
+        if (auth.user) {
+            checkToken();
+        }
     }, []);
 
     return (

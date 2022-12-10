@@ -1,8 +1,9 @@
 import axios from "axios";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import localStorage from "redux-persist/es/storage";
 import { UserContext } from "~/App";
 import CommentForm from "~/comment/CommentForm";
 import ScrollTop from "~/components/scroll/ScrollTop";
@@ -124,10 +125,65 @@ const MovieWatch = () => {
     useEffect(() => {
         if (truyen) {
             if (socket) {
-                if (!auth.user?.accessToken) {
-                    return;
+                if (auth.user?.accessToken) {
+                    getToken();
+                } else {
+                    localStorage.getItem("likes").then((res) => {
+                        let likesArr = [];
+                        if (res !== null) {
+                            likesArr = JSON.parse(res);
+                        }
+                        const check = likesArr.some(
+                            (item) =>
+                                item?.readId?._id?.toString() ===
+                                truyen?._id?.toString()
+                        );
+                        if (!check) {
+                            const newOne = {
+                                readId: {
+                                    _id: truyen?._id,
+                                    image: truyen?.image,
+                                    watchs: truyen?.watchs,
+                                    stars: truyen?.stars,
+                                    reviewers: truyen?.reviewers,
+                                    slug: truyen?.slug,
+                                    title: truyen?.title,
+                                    chapters: [],
+                                },
+                                chapters: [chapter],
+                            };
+                            if (truyen?.chapters?.length > 0) {
+                                newOne.readId.chapters["chapters"] = Array(
+                                    truyen?.chapters?.length - 1
+                                ).fill(0);
+                                newOne.readId.chapters["chapters"].push({
+                                    createdAt:
+                                        truyen?.chapters[
+                                            truyen?.chapters?.length - 1
+                                        ].createdAt,
+                                });
+                            }
+                            likesArr.push(newOne);
+                        } else {
+                            likesArr = likesArr.map((item) => {
+                                if (
+                                    item?.readId?._id?.toString() ===
+                                    truyen?._id?.toString()
+                                ) {
+                                    const check = item?.chapters?.some(
+                                        (item) => item === chapter
+                                    );
+                                    if (!check) {
+                                        item?.chapters.push(chapter);
+                                    }
+                                }
+                                return item;
+                            });
+                        }
+                        localStorage.removeItem("likes");
+                        localStorage.setItem("likes", JSON.stringify(likesArr));
+                    });
                 }
-                getToken();
             }
         }
     }, [socket, chapter, slug, auth.user, truyen]);

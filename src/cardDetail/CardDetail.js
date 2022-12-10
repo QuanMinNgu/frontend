@@ -10,6 +10,7 @@ import { isFailing, isLoading, isLogin, isSuccess } from "~/redux/slice/auth";
 import "./style.css";
 import moment from "moment";
 import localization from "moment/locale/vi";
+import localStorage from "redux-persist/es/storage";
 const CardDetail = () => {
     moment.locale("vi", localization);
     const [currentStar, setCurrentStar] = useState(null);
@@ -45,7 +46,7 @@ const CardDetail = () => {
     const ratingRef = useRef(0);
 
     const handleFollows = async () => {
-        if (auth?.user?.accessToken) {
+        if (auth.user?.accessToken) {
             const da = (await checkToken()) || auth?.user?.accessToken;
             if (socket) {
                 socket.emit("follows", {
@@ -54,65 +55,119 @@ const CardDetail = () => {
                 });
             }
         } else {
+            localStorage.getItem("follows").then((res) => {
+                let followsArr = [];
+                if (res === null) {
+                    followsArr = [];
+                } else {
+                    followsArr = JSON.parse(res);
+                }
+                const newTruyen = {
+                    _id: truyen?._id,
+                    image: truyen?.image,
+                    watchs: truyen?.watchs,
+                    stars: truyen?.stars,
+                    reviewers: truyen?.reviewers,
+                    slug: truyen?.slug,
+                    title: truyen?.title,
+                    chapters: [],
+                };
+                if (truyen?.chapters?.length > 0) {
+                    newTruyen["chapters"] = Array(
+                        truyen?.chapters?.length - 1
+                    ).fill(0);
+                    newTruyen["chapters"].push({
+                        createdAt:
+                            truyen?.chapters[truyen?.chapters?.length - 1]
+                                .createdAt,
+                    });
+                }
+
+                if (follow) {
+                    //-
+                    followsArr = followsArr.filter(
+                        (item) =>
+                            item?._id?.toString() !== truyen?._id?.toString()
+                    );
+                } else {
+                    //+
+                    const check = followsArr.some(
+                        (item) =>
+                            item?._id?.toString() === truyen?._id?.toString()
+                    );
+                    if (!check) {
+                        followsArr.push(newTruyen);
+                    }
+                }
+                localStorage.removeItem("follows");
+                localStorage.setItem("follows", JSON.stringify(followsArr));
+            });
         }
         setFollow(!follow);
         setUpdate(!update);
     };
 
     useEffect(() => {
-        if (auth.user?.reads) {
-            setReads(auth.user?.reads);
+        if (auth.user?.accessToken) {
+            if (auth.user?.reads) {
+                setReads(auth.user?.reads);
+            }
+        } else {
         }
     }, [slug]);
 
     const handleLikeMovie = async () => {
-        const da = (await checkToken()) || auth?.user?.accessToken;
-        if (socket) {
-            socket.emit("liking", {
-                slug: slug,
-                token: da,
-                id: truyen?._id,
-            });
+        if (auth.user?.accessToken) {
+            const da = (await checkToken()) || auth?.user?.accessToken;
+            if (socket) {
+                socket.emit("liking", {
+                    slug: slug,
+                    token: da,
+                    id: truyen?._id,
+                });
+            }
         }
     };
 
     useEffect(() => {
         if (socket) {
-            socket.on("BackFollow", (infor) => {
-                const user = { ...auth.user };
-                delete user["follows"];
-                dispatch(
-                    isLogin({
-                        ...user,
-                        follows: infor.follows,
-                    })
-                );
-                if (truyen) {
-                    if (follow) {
-                        if (infor?.num) {
-                            followRef.current = truyen?.follows;
+            if (auth.user?.accessToken) {
+                socket.on("BackFollow", (infor) => {
+                    const user = { ...auth.user };
+                    delete user["follows"];
+                    dispatch(
+                        isLogin({
+                            ...user,
+                            follows: infor.follows,
+                        })
+                    );
+                    if (truyen) {
+                        if (follow) {
+                            if (infor?.num) {
+                                followRef.current = truyen?.follows;
+                            } else {
+                                followRef.current = truyen?.follows - 1;
+                            }
                         } else {
-                            followRef.current = truyen?.follows - 1;
-                        }
-                    } else {
-                        if (infor?.num) {
-                            followRef.current = truyen?.follows + 1;
-                        } else {
-                            followRef.current = truyen?.follows;
+                            if (infor?.num) {
+                                followRef.current = truyen?.follows + 1;
+                            } else {
+                                followRef.current = truyen?.follows;
+                            }
                         }
                     }
-                }
-            });
-            socket.on("backLiking", (infor) => {
-                if (truyen) {
-                    if (infor?.num) {
-                        likeRef.current++;
-                    } else {
-                        likeRef.current--;
+                });
+                socket.on("backLiking", (infor) => {
+                    if (truyen) {
+                        if (infor?.num) {
+                            likeRef.current++;
+                        } else {
+                            likeRef.current--;
+                        }
+                        setLike(likeRef.current);
                     }
-                    setLike(likeRef.current);
-                }
-            });
+                });
+            }
         }
     }, [socket, truyen]);
 
@@ -128,14 +183,16 @@ const CardDetail = () => {
     }, [truyen]);
 
     useEffect(() => {
-        if (socket) {
-            if (currentStar) {
-                socket.emit("rating", {
-                    id: truyen?._id,
-                    type: typeUpdateRef.current,
-                    star: currentStar,
-                });
-                typeUpdateRef.current = true;
+        if (auth.user?.accessToken) {
+            if (socket) {
+                if (currentStar) {
+                    socket.emit("rating", {
+                        id: truyen?._id,
+                        type: typeUpdateRef.current,
+                        star: currentStar,
+                    });
+                    typeUpdateRef.current = true;
+                }
             }
         }
     }, [currentStar]);
@@ -154,12 +211,26 @@ const CardDetail = () => {
         let here = true;
         const url = `/api/movie/${slug}`;
         if (cache.current[url]) {
-            if (auth?.user?.accessToken) {
+            if (auth.user?.accessToken) {
                 auth?.user?.follows?.forEach((item) => {
                     if (
                         item?.toString() === cache.current[url]?._id?.toString()
                     ) {
                         setFollow(true);
+                    }
+                });
+            } else {
+                localStorage.getItem("follows").then((res) => {
+                    if (res !== null) {
+                        const followsArr = JSON.parse(res);
+                        followsArr?.forEach((item) => {
+                            if (
+                                item?._id?.toString() ===
+                                cache.current[url]?._id?.toString()
+                            ) {
+                                setFollow(true);
+                            }
+                        });
                     }
                 });
             }
@@ -174,8 +245,9 @@ const CardDetail = () => {
                 if (!here) {
                     return;
                 }
-                if (auth?.user?.accessToken) {
-                    auth?.user?.follows?.forEach((item) => {
+                cache.current[url] = res?.data?.product;
+                if (auth.user?.accessToken) {
+                    auth.user?.follows?.forEach((item) => {
                         if (
                             item?.toString() ===
                             res?.data?.product?._id?.toString()
@@ -183,8 +255,21 @@ const CardDetail = () => {
                             setFollow(true);
                         }
                     });
+                } else {
+                    localStorage.getItem("follows").then((res) => {
+                        if (res !== null) {
+                            const followsArr = JSON.parse(res);
+                            followsArr?.forEach((item) => {
+                                if (
+                                    item?._id?.toString() ===
+                                    cache.current[url]?._id?.toString()
+                                ) {
+                                    setFollow(true);
+                                }
+                            });
+                        }
+                    });
                 }
-                cache.current[url] = res?.data?.product;
                 followRef.current = cache.current[url]?.follows;
                 setLike(cache.current[url]?.likes);
                 setTruyen(res?.data?.product);

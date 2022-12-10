@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import Loading from "~/loading/Loading";
 import "./style.css";
 const ImageWatch = ({ url }) => {
     const imgRef = useRef(null);
