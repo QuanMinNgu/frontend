@@ -136,6 +136,36 @@ const HeaderSliceA = ({ headerSlice, setHeaderSlice, kinds, countries }) => {
                     <div className="header_slice_auth_exist">
                         <Link
                             className="header_slice_link"
+                            to="/user/truyen-theo-doi"
+                        >
+                            <div
+                                onClick={() => {
+                                    setHeaderSlice(false);
+                                }}
+                                className="header_slice_auth_items"
+                            >
+                                Truyện Theo Dõi
+                            </div>
+                        </Link>
+                    </div>
+                    <div className="header_slice_auth_exist">
+                        <Link
+                            className="header_slice_link"
+                            to="/user/truyen-da-doc"
+                        >
+                            <div
+                                onClick={() => {
+                                    setHeaderSlice(false);
+                                }}
+                                className="header_slice_auth_items"
+                            >
+                                Truyện Đã Đọc
+                            </div>
+                        </Link>
+                    </div>
+                    <div className="header_slice_auth_exist">
+                        <Link
+                            className="header_slice_link"
                             to="/tim-kiem?sort=-watchs"
                         >
                             <div
