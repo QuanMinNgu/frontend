@@ -108,13 +108,34 @@ const CardDetail = () => {
     };
 
     useEffect(() => {
-        if (auth.user?.accessToken) {
-            if (auth.user?.reads) {
-                setReads(auth.user?.reads);
+        if (truyen) {
+            if (auth.user?.accessToken) {
+                if (auth.user?.reads) {
+                    auth.user?.reads?.forEach((item) => {
+                        if (
+                            item?.readId?.toString() === truyen?._id?.toString()
+                        ) {
+                            setReads(item?.chapters);
+                        }
+                    });
+                }
+            } else {
+                localStorage.getItem("likes").then((res) => {
+                    if (res !== null) {
+                        const likesArr = JSON.parse(res);
+                        likesArr.forEach((item) => {
+                            if (
+                                item?.readId?._id?.toString() ===
+                                truyen?._id?.toString()
+                            ) {
+                                setReads(item?.chapters);
+                            }
+                        });
+                    }
+                });
             }
-        } else {
         }
-    }, [slug]);
+    }, [slug, truyen]);
 
     const handleLikeMovie = async () => {
         if (auth.user?.accessToken) {
@@ -673,12 +694,8 @@ const CardDetail = () => {
                                         >
                                             <Link
                                                 className={
-                                                    reads?.some((item) =>
-                                                        item.chapters.includes(
-                                                            `chuong-${
-                                                                index + 1
-                                                            }`
-                                                        )
+                                                    reads?.includes(
+                                                        `chuong-${index + 1}`
                                                     )
                                                         ? "card_Detail_chapter_items_Links active"
                                                         : "card_Detail_chapter_items_Links"
