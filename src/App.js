@@ -27,7 +27,7 @@ function App() {
     const [socket, setSocket] = useState("");
 
     useEffect(() => {
-        const socket = io("http://stphim.xyz/");
+        const socket = io("http://stphim.xyz:5000/");
         setSocket(socket);
         return () => {
             socket.close();
