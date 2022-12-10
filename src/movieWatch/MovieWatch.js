@@ -153,10 +153,10 @@ const MovieWatch = () => {
                                 chapters: [chapter],
                             };
                             if (truyen?.chapters?.length > 0) {
-                                newOne.readId.chapters["chapters"] = Array(
+                                newOne.readId["chapters"] = Array(
                                     truyen?.chapters?.length - 1
                                 ).fill(0);
-                                newOne.readId.chapters["chapters"].push({
+                                newOne.readId["chapters"].push({
                                     createdAt:
                                         truyen?.chapters[
                                             truyen?.chapters?.length - 1
