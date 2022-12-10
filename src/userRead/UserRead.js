@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import localStorage from "redux-persist/es/storage";
 import { UserContext } from "~/App";
 import Card from "~/card/Card";
 import "./style.css";
@@ -32,9 +33,15 @@ const UserRead = () => {
 
     useEffect(() => {
         let here = true;
-        if (auth.user) {
+        if (auth.user?.accessToken) {
             getuserProfile();
         } else {
+            localStorage.getItem("likes").then((res) => {
+                if (res !== null) {
+                    const likesArr = JSON.parse(res);
+                    setCards(likesArr);
+                }
+            });
         }
         return () => {
             here = false;
